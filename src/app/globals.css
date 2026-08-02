@@ -2,25 +2,60 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --surface: #ffffff;
+  --tint: #dcf1f7;
+  --silver: #cacacc;
+  --silver-wash: #f1f1f2;
+  --foreground: #17232b;
+  --muted: #57646d;
+  --border: #e3e4e6;
+  --border-strong: #cacacc;
+  --accent: #e88956;
+  --accent-strong: #a8461f;
+  --accent-soft: rgba(232, 137, 86, 0.16);
+  --ink-fixed: #17232b;
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-tint: var(--tint);
+  --color-silver: var(--silver);
+  --color-silver-wash: var(--silver-wash);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-ink-fixed: var(--ink-fixed);
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-source-serif);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #10171c;
+    --surface: #182129;
+    --tint: #13232b;
+    --silver: rgba(255, 255, 255, 0.24);
+    --silver-wash: #1b1d20;
+    --foreground: #e7eef1;
+    --muted: #93a2aa;
+    --border: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(255, 255, 255, 0.24);
+    --accent: #f0975f;
+    --accent-strong: #f0975f;
+    --accent-soft: rgba(240, 151, 95, 0.18);
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+* {
+  border-color: var(--border);
 }

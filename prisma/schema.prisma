@@ -1,0 +1,202 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum PlanTier {
+  FREE
+  PRO
+  MAX
+}
+
+enum ArticleStatus {
+  DRAFT
+  IN_REVIEW
+  FINAL
+  ARCHIVED
+}
+
+enum ArticleSource {
+  SCRATCH
+  UPLOADED
+  PARTIAL
+}
+
+enum EngineJobType {
+  EXTRACT_TEXT
+  DETECT_LANGUAGE
+  SEGMENT_STRUCTURE
+  GENERATE_SECTION
+  EXTRACT_KEYWORDS
+  SCORE_AI_DETECTION
+  CLASSIFY_TOPIC
+  ANALYZE_QUALITY
+  TRANSLATE
+  HUMANIZE_REWRITE
+  MATCH_JOURNALS
+  PLAGIARISM_CHECK
+  CHECK_SCHOLAR_READINESS
+}
+
+enum EngineJobStatus {
+  QUEUED
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum JournalCategory {
+  OAK_REPUBLIC
+  OAK_INTERNATIONAL
+  PRESTIGIOUS
+  IMPACT_FACTOR
+  SCOPUS
+}
+
+enum FavoriteTarget {
+  JOURNAL
+  ARTICLE
+}
+
+enum ExportFormat {
+  DOCX
+  PDF
+  TXT
+}
+
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  name              String
+  field             String
+  institution       String?
+  preferredLanguage String    @default("en")
+  onboardedAt       DateTime?
+  createdAt         DateTime  @default(now())
+
+  subscription Subscription?
+  articles     Article[]
+  engineJobs   EngineJob[]
+  favorites    Favorite[]
+}
+
+model Subscription {
+  id       String    @id @default(cuid())
+  user     User      @relation(fields: [userId], references: [id])
+  userId   String    @unique
+  plan     PlanTier  @default(FREE)
+  renewsAt DateTime?
+
+  humanizeRunsThisMonth     Int      @default(0)
+  translateRunsThisMonth    Int      @default(0)
+  plagiarismChecksThisMonth Int      @default(0)
+  usagePeriodStart          DateTime @default(now())
+}
+
+model Article {
+  id               String        @id @default(cuid())
+  owner            User          @relation(fields: [ownerId], references: [id])
+  ownerId          String
+  title            String
+  field            String
+  source           ArticleSource @default(SCRATCH)
+  status           ArticleStatus @default(DRAFT)
+  language         String        @default("en")
+  currentVersionId String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  sections       ArticleSection[]
+  versions       ArticleVersion[]
+  engineJobs     EngineJob[]
+  journalMatches JournalMatch[]
+  exports        ExportRecord[]
+}
+
+model ArticleSection {
+  id        String  @id @default(cuid())
+  article   Article @relation(fields: [articleId], references: [id])
+  articleId String
+  key       String
+  title     String
+  order     Int
+  content   String  @default("")
+}
+
+model ArticleVersion {
+  id        String   @id @default(cuid())
+  article   Article  @relation(fields: [articleId], references: [id])
+  articleId String
+  label     String
+  snapshot  String // JSON blob of Article+sections at time of save
+  createdAt DateTime @default(now())
+  createdBy String // "user" | "engine"
+}
+
+model EngineJob {
+  id          String          @id @default(cuid())
+  user        User            @relation(fields: [userId], references: [id])
+  userId      String
+  article     Article?        @relation(fields: [articleId], references: [id])
+  articleId   String?
+  type        EngineJobType
+  status      EngineJobStatus @default(QUEUED)
+  input       String // JSON
+  output      String? // JSON
+  error       String?
+  createdAt   DateTime        @default(now())
+  completedAt DateTime?
+}
+
+model Journal {
+  id             String          @id @default(cuid())
+  name           String
+  field          String // comma-separated tags, simple for MVP
+  quartile       String?
+  impactFactor   Float?
+  citeScore      Float?
+  category       JournalCategory
+  avgReviewWeeks Int?
+  websiteUrl     String
+  updatedAt      DateTime        @updatedAt
+
+  matches JournalMatch[]
+}
+
+model JournalMatch {
+  id                 String  @id @default(cuid())
+  article            Article @relation(fields: [articleId], references: [id])
+  articleId          String
+  journal            Journal @relation(fields: [journalId], references: [id])
+  journalId          String
+  matchPercent       Float
+  acceptanceEstimate Float
+  rankInResult       Int
+}
+
+// targetId is polymorphic (Journal.id or Article.id depending on targetType) —
+// resolved at the application layer rather than as a DB foreign key.
+model Favorite {
+  id         String         @id @default(cuid())
+  user       User           @relation(fields: [userId], references: [id])
+  userId     String
+  targetType FavoriteTarget
+  targetId   String
+  createdAt  DateTime       @default(now())
+
+  @@unique([userId, targetType, targetId])
+}
+
+model ExportRecord {
+  id          String       @id @default(cuid())
+  article     Article      @relation(fields: [articleId], references: [id])
+  articleId   String
+  format      ExportFormat
+  requestedBy String
+  createdAt   DateTime     @default(now())
+  downloadUrl String
+}
