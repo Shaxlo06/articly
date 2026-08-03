@@ -12,11 +12,11 @@ export interface ExportPayload {
   ownerName: string;
 }
 
-const WATERMARK = (owner: string) => `Prepared with Smart Article — owner: ${owner}`;
+const WATERMARK = (owner: string) => `Prepared with ArticlyApp — owner: ${owner}`;
 
 export async function toDocxBuffer(payload: ExportPayload): Promise<Buffer> {
   const doc = new Document({
-    creator: "Smart Article",
+    creator: "ArticlyApp",
     title: payload.title,
     description: WATERMARK(payload.ownerName),
     sections: [

@@ -93,7 +93,7 @@ export function IndexingJobView({ initial }: { initial: JobState }) {
               <div className="rounded-lg border border-border bg-surface p-5">
                 <p className="text-sm font-semibold mb-3">Indexing status</p>
                 <p className="text-xs text-muted mb-3">
-                  Smart Article can&apos;t query Google Scholar directly — set this by hand once you&apos;ve checked
+                  ArticlyApp can&apos;t query Google Scholar directly — set this by hand once you&apos;ve checked
                   Scholar yourself or submitted the URL via Search Console.
                 </p>
                 <div className="flex gap-2">

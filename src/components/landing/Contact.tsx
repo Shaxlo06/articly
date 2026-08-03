@@ -12,7 +12,7 @@ const FAQS = [
     a: "Uzbek, English, and Russian at launch, with more academic language pairs planned.",
   },
   {
-    q: "Can Smart Article guarantee Google Scholar indexing?",
+    q: "Can ArticlyApp guarantee Google Scholar indexing?",
     a: "No — we prepare your article's metadata and check readiness, but indexing itself is Google's decision and timeline.",
   },
 ];

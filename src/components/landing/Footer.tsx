@@ -58,7 +58,7 @@ export function Footer() {
 
       <div className="border-t border-border">
         <div className="mx-auto max-w-6xl px-6 py-6 text-xs text-muted">
-          © {new Date().getFullYear()} Smart Article. All rights reserved.
+          © {new Date().getFullYear()} ArticlyApp. All rights reserved.
         </div>
       </div>
     </footer>

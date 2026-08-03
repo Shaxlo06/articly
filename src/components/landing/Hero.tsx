@@ -14,7 +14,7 @@ export function Hero() {
           From first outline to published paper.
         </h1>
         <p className="mt-5 text-lg text-muted leading-relaxed max-w-lg">
-          Smart Article guides researchers through drafting, academic translation, journal matching, and
+          ArticlyApp guides researchers through drafting, academic translation, journal matching, and
           Google Scholar indexing — one AI-assisted workspace, from scratch to submission-ready.
         </p>
 

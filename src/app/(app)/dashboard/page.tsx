@@ -105,7 +105,7 @@ export default async function DashboardPage() {
           <h2 className="font-serif text-xl font-semibold">Start your first article</h2>
           <p className="text-muted max-w-md">
             Write from scratch, upload a draft to finish, or bring in an existing article to edit —
-            Smart Article will guide you the rest of the way.
+            ArticlyApp will guide you the rest of the way.
           </p>
           <Link
             href="/editor/new"

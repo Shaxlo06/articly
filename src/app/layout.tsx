@@ -14,7 +14,7 @@ const sourceSerif = Source_Serif_4({
 });
 
 export const metadata: Metadata = {
-  title: "Smart Article",
+  title: "ArticlyApp",
   description: "From first outline to published paper.",
   icons: {
     icon: [

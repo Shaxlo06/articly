@@ -36,7 +36,7 @@ export default function NewIndexingJobPage() {
       <h1 className="font-serif text-3xl font-semibold mt-1">Check indexing readiness</h1>
       <p className="text-muted mt-2">
         Paste the public URL where your article is hosted (your own site, a journal page, or a repository). We&apos;ll
-        check that it&apos;s reachable and carries the citation metadata Google Scholar looks for — Smart Article
+        check that it&apos;s reachable and carries the citation metadata Google Scholar looks for — ArticlyApp
         doesn&apos;t host articles itself, so the page needs to already be live somewhere public.
       </p>
 
