@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Logo } from "@/components/Logo";
+import { GoogleSignInButton } from "@/components/GoogleSignInButton";
 import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
@@ -40,7 +41,17 @@ export default function LoginPage() {
 
         <h1 className="font-serif text-xl font-semibold text-center">Log in</h1>
 
-        <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
+        <div className="mt-6">
+          <GoogleSignInButton label="Log in with Google" />
+        </div>
+
+        <div className="mt-5 flex items-center gap-3 text-xs text-muted">
+          <span className="h-px flex-1 bg-border" />
+          or
+          <span className="h-px flex-1 bg-border" />
+        </div>
+
+        <form onSubmit={handleSubmit} className="mt-5 flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
             <label htmlFor="email" className="text-xs font-semibold text-muted uppercase tracking-wide">
               Email

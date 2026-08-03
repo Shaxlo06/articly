@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Logo } from "@/components/Logo";
+import { GoogleSignInButton } from "@/components/GoogleSignInButton";
 import { createClient } from "@/lib/supabase/client";
 
 export default function SignupPage() {
@@ -52,46 +53,58 @@ export default function SignupPage() {
             Check <span className="font-semibold">{email}</span> for a confirmation link, then log in.
           </p>
         ) : (
-          <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-4">
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="email" className="text-xs font-semibold text-muted uppercase tracking-wide">
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="rounded-md border border-border-strong bg-tint px-3 py-2 text-sm outline-none focus:border-accent"
-              />
+          <>
+            <div className="mt-6">
+              <GoogleSignInButton />
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="password" className="text-xs font-semibold text-muted uppercase tracking-wide">
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                required
-                minLength={6}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="rounded-md border border-border-strong bg-tint px-3 py-2 text-sm outline-none focus:border-accent"
-              />
+            <div className="mt-5 flex items-center gap-3 text-xs text-muted">
+              <span className="h-px flex-1 bg-border" />
+              or
+              <span className="h-px flex-1 bg-border" />
             </div>
 
-            {error && <p className="text-sm text-red-600">{error}</p>}
+            <form onSubmit={handleSubmit} className="mt-5 flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="email" className="text-xs font-semibold text-muted uppercase tracking-wide">
+                  Email
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="rounded-md border border-border-strong bg-tint px-3 py-2 text-sm outline-none focus:border-accent"
+                />
+              </div>
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="mt-2 text-center text-sm font-semibold px-4 py-2.5 rounded-md bg-accent text-white hover:bg-accent-strong transition-colors disabled:opacity-60"
-            >
-              {loading ? "Signing up…" : "Sign up"}
-            </button>
-          </form>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor="password" className="text-xs font-semibold text-muted uppercase tracking-wide">
+                  Password
+                </label>
+                <input
+                  id="password"
+                  type="password"
+                  required
+                  minLength={6}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="rounded-md border border-border-strong bg-tint px-3 py-2 text-sm outline-none focus:border-accent"
+                />
+              </div>
+
+              {error && <p className="text-sm text-red-600">{error}</p>}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="mt-2 text-center text-sm font-semibold px-4 py-2.5 rounded-md bg-accent text-white hover:bg-accent-strong transition-colors disabled:opacity-60"
+              >
+                {loading ? "Signing up…" : "Sign up"}
+              </button>
+            </form>
+          </>
         )}
 
         <p className="mt-4 text-center text-sm text-muted">
