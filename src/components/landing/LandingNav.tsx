@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
 
@@ -8,8 +11,25 @@ const LINKS = [
 ];
 
 export function LandingNav() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 8);
+    }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="sticky top-0 z-20 border-b border-border bg-surface/90 backdrop-blur">
+    <header
+      className={
+        scrolled
+          ? "sticky top-0 z-20 border-b border-border bg-surface/90 backdrop-blur transition-colors"
+          : "sticky top-0 z-20 border-b border-transparent bg-transparent transition-colors"
+      }
+    >
       <div className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between gap-6">
         <Link href="/">
           <Logo />

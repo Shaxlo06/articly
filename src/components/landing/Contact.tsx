@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Reveal } from "./Reveal";
 
 const FAQS = [
   {
@@ -87,19 +88,21 @@ export function Contact() {
 
           <div className="mt-6 text-sm text-muted">
             <p>Or reach us directly:</p>
-            <p className="mt-1 font-medium text-foreground">support@smartarticle.uz</p>
+            <p className="mt-1 font-medium text-foreground">support@articlyapp.com</p>
           </div>
         </div>
 
         <div className="space-y-3">
-          {FAQS.map((faq) => (
-            <details key={faq.q} className="rounded-lg border border-border bg-surface p-4 group">
-              <summary className="cursor-pointer text-sm font-semibold list-none flex items-center justify-between">
-                {faq.q}
-                <span className="text-muted group-open:rotate-45 transition-transform">+</span>
-              </summary>
-              <p className="mt-2 text-sm text-muted leading-relaxed">{faq.a}</p>
-            </details>
+          {FAQS.map((faq, i) => (
+            <Reveal key={faq.q} delayMs={i * 80}>
+              <details className="rounded-lg border border-border bg-surface p-4 group transition-shadow hover:shadow-sm">
+                <summary className="cursor-pointer text-sm font-semibold list-none flex items-center justify-between">
+                  {faq.q}
+                  <span className="text-muted group-open:rotate-45 transition-transform">+</span>
+                </summary>
+                <p className="mt-2 text-sm text-muted leading-relaxed">{faq.a}</p>
+              </details>
+            </Reveal>
           ))}
         </div>
       </div>

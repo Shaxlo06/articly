@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Reveal } from "./Reveal";
 
 const PLANS = [
   {
@@ -62,47 +63,48 @@ export function Pricing() {
       </div>
 
       <div className="mt-10 grid md:grid-cols-3 gap-6 items-start">
-        {PLANS.map((plan) => (
-          <div
-            key={plan.tier}
-            className={
-              plan.highlight
-                ? "relative rounded-lg border-2 border-accent bg-surface p-6 shadow-md"
-                : "relative rounded-lg border border-border bg-surface p-6"
-            }
-          >
-            {plan.highlight && (
-              <span className="absolute -top-3 left-6 rounded-full bg-accent text-white text-xs font-semibold px-3 py-1">
-                Recommended
-              </span>
-            )}
-            <h3 className="font-serif text-xl font-semibold">{plan.tier}</h3>
-            <p className="mt-1 text-sm text-muted">{plan.who}</p>
-            <p className="mt-4 flex items-baseline gap-1">
-              <span className="font-serif text-3xl font-semibold">{plan.price}</span>
-              <span className="text-sm text-muted">{plan.cadence}</span>
-            </p>
-
-            <ul className="mt-6 space-y-2 text-sm">
-              {plan.features.map((feature) => (
-                <li key={feature} className="flex gap-2 text-foreground/90">
-                  <span className="text-accent-strong">✓</span>
-                  <span>{feature}</span>
-                </li>
-              ))}
-            </ul>
-
-            <Link
-              href="/signup"
+        {PLANS.map((plan, i) => (
+          <Reveal key={plan.tier} delayMs={i * 80} className="h-full">
+            <div
               className={
                 plan.highlight
-                  ? "mt-6 block text-center text-sm font-semibold px-4 py-2.5 rounded-md bg-accent text-white hover:bg-accent-strong transition-colors"
-                  : "mt-6 block text-center text-sm font-semibold px-4 py-2.5 rounded-md border border-border-strong hover:border-accent-strong hover:text-accent-strong transition-colors"
+                  ? "relative h-full rounded-lg border-2 border-accent bg-surface p-6 shadow-md transition-shadow hover:shadow-lg"
+                  : "relative h-full rounded-lg border border-border bg-surface p-6 transition-shadow hover:shadow-md"
               }
             >
-              {plan.cta}
-            </Link>
-          </div>
+              {plan.highlight && (
+                <span className="absolute -top-3 left-6 rounded-full bg-accent text-white text-xs font-semibold px-3 py-1">
+                  Recommended
+                </span>
+              )}
+              <h3 className="font-serif text-xl font-semibold">{plan.tier}</h3>
+              <p className="mt-1 text-sm text-muted">{plan.who}</p>
+              <p className="mt-4 flex items-baseline gap-1">
+                <span className="font-serif text-3xl font-semibold">{plan.price}</span>
+                <span className="text-sm text-muted">{plan.cadence}</span>
+              </p>
+
+              <ul className="mt-6 space-y-2 text-sm">
+                {plan.features.map((feature) => (
+                  <li key={feature} className="flex gap-2 text-foreground/90">
+                    <span className="text-accent-strong">✓</span>
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <Link
+                href="/signup"
+                className={
+                  plan.highlight
+                    ? "mt-6 block text-center text-sm font-semibold px-4 py-2.5 rounded-md bg-accent text-white hover:bg-accent-strong transition-colors"
+                    : "mt-6 block text-center text-sm font-semibold px-4 py-2.5 rounded-md border border-border-strong hover:border-accent-strong hover:text-accent-strong transition-colors"
+                }
+              >
+                {plan.cta}
+              </Link>
+            </div>
+          </Reveal>
         ))}
       </div>
 

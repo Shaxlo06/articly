@@ -1,3 +1,5 @@
+import { Reveal } from "./Reveal";
+
 const STEPS = [
   {
     n: "01",
@@ -30,12 +32,14 @@ export function Loop() {
       </div>
 
       <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {STEPS.map((step) => (
-          <div key={step.n} className="rounded-lg border border-border bg-surface p-6">
-            <span className="font-serif text-2xl font-semibold text-accent-strong">{step.n}</span>
-            <h3 className="mt-3 font-semibold">{step.title}</h3>
-            <p className="mt-2 text-sm text-muted leading-relaxed">{step.description}</p>
-          </div>
+        {STEPS.map((step, i) => (
+          <Reveal key={step.n} delayMs={i * 80}>
+            <div className="h-full rounded-lg border border-border bg-surface p-6 transition-shadow hover:shadow-md">
+              <span className="font-serif text-2xl font-semibold text-accent-strong">{step.n}</span>
+              <h3 className="mt-3 font-semibold">{step.title}</h3>
+              <p className="mt-2 text-sm text-muted leading-relaxed">{step.description}</p>
+            </div>
+          </Reveal>
         ))}
       </div>
     </section>
