@@ -1,27 +1,53 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse, type NextRequest } from "next/server";
 
-const SESSION_COOKIE = "sa_session_user";
+const PUBLIC_PATHS = ["/", "/login", "/signup"];
 
-// Assigns an anonymous session id on first visit so the app has a stable
-// owner for articles/jobs/favorites without building real auth (Login/
-// Register + Profile Setup are out of scope here). Only touches the cookie —
-// no DB access — since Proxy should stay fast and isn't a full session
-// management solution.
-export function proxy(request: NextRequest) {
-  const existing = request.cookies.get(SESSION_COOKIE)?.value;
-  if (existing) return NextResponse.next();
+export async function proxy(request: NextRequest) {
+  let response = NextResponse.next({ request });
 
-  const response = NextResponse.next();
-  response.cookies.set(SESSION_COOKIE, crypto.randomUUID(), {
-    httpOnly: true,
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 365,
-  });
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value)
+          );
+          response = NextResponse.next({ request });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options)
+          );
+        },
+      },
+    }
+  );
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { pathname } = request.nextUrl;
+  const isPublic = PUBLIC_PATHS.includes(pathname);
+
+  if (!user && !isPublic) {
+    const loginUrl = new URL("/login", request.url);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  if (user && (pathname === "/login" || pathname === "/signup")) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
   return response;
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)",
+  ],
 };

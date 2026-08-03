@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/session";
 import { PlanBadge } from "./PlanBadge";
 import { Logo } from "./Logo";
+import { LogoutButton } from "./LogoutButton";
 
 const NAV_LINKS = [
   { href: "/dashboard", label: "Dashboard" },
@@ -43,6 +44,7 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
             >
               {user.name.slice(0, 1)}
             </Link>
+            <LogoutButton />
           </div>
         </div>
       </header>

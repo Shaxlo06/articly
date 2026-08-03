@@ -1,41 +1,34 @@
-import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
-
-const SESSION_COOKIE = "sa_session_user";
+import { createClient } from "@/lib/supabase/server";
 
 /**
- * Stands in for real auth (Login/Register + Profile Setup are out of scope
- * for this build). `proxy.ts` assigns an anonymous session id cookie on
- * first visit; this upserts a demo User + Free subscription keyed by that
- * id, so the rest of the app has a real, persisted owner to attach
- * articles/jobs/favorites to. Cookie writes can't happen here (Server
- * Components can only read cookies), which is why the id is assigned
- * upstream in Proxy instead.
+ * Resolves the signed-in Supabase user and the Prisma User row attached to
+ * them (created on first login, keyed by Supabase's auth.users.id). Throws
+ * if there's no session — every caller lives behind proxy.ts's auth redirect,
+ * so reaching this without a session means the matcher didn't cover the
+ * route rather than a normal "logged out" state.
  */
 export async function getCurrentUser() {
-  const store = await cookies();
-  const sessionId = store.get(SESSION_COOKIE)?.value;
+  const user = await getOptionalCurrentUser();
+  if (!user) throw new Error("Unauthorized");
+  return user;
+}
 
-  if (!sessionId) {
-    // Proxy didn't run (e.g. matcher miss) — fall back to a per-request user
-    // rather than throwing, since this is a demo session, not real auth.
-    return prisma.user.create({
-      data: {
-        email: `researcher-${Date.now()}@example.com`,
-        name: "",
-        field: "",
-        subscription: { create: { plan: "FREE" } },
-      },
-      include: { subscription: true },
-    });
-  }
+/** Same as getCurrentUser but returns null instead of throwing — for public pages. */
+export async function getOptionalCurrentUser() {
+  const supabase = await createClient();
+  const {
+    data: { user: authUser },
+  } = await supabase.auth.getUser();
+
+  if (!authUser) return null;
 
   return prisma.user.upsert({
-    where: { id: sessionId },
+    where: { authId: authUser.id },
     update: {},
     create: {
-      id: sessionId,
-      email: `researcher-${sessionId}@example.com`,
+      authId: authUser.id,
+      email: authUser.email ?? `${authUser.id}@users.noreply.articly`,
       name: "",
       field: "",
       subscription: { create: { plan: "FREE" } },

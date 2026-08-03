@@ -1,6 +1,7 @@
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 generator client {
@@ -70,6 +71,7 @@ enum ExportFormat {
 
 model User {
   id                String    @id @default(cuid())
+  authId            String    @unique
   email             String    @unique
   name              String
   field             String
