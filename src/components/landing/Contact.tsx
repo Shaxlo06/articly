@@ -78,7 +78,7 @@ export function Contact() {
 
           <div className="mt-6 text-sm text-muted">
             <p>{t("form.reachDirectly")}</p>
-            <p className="mt-1 font-medium text-foreground">support@articlyapp.com</p>
+            <p className="mt-1 font-medium text-foreground">info@articlyapp.com</p>
           </div>
         </div>
 

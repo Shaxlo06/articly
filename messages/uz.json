@@ -5,7 +5,7 @@
     "history": "Tarix",
     "favorites": "Sevimlilar",
     "login": "Kirish",
-    "signup": "Ro'yxatdan o'tish",
+    "signup": "Yozib ko'ring",
     "logout": "Chiqish",
     "howItWorks": "Qanday ishlaydi",
     "pricing": "Narxlar",
@@ -17,7 +17,7 @@
     "hero": {
       "title": "Birinchi rejadan nashr etilgan maqolagacha.",
       "subtitle": "ArticlyApp tadqiqotchilarga maqola yozish, ilmiy tarjima, jurnal tanlash va Google Scholar'da indekslanish jarayonlarida yordam beradi — noldan taqdim etishga tayyor bo'lgunga qadar, yagona AI yordamchi ish maydonida.",
-      "signupCta": "Bepul ro'yxatdan o'ting",
+      "signupCta": "Yozib ko'ring",
       "loginCta": "Kirish",
       "tagline": "Yosh tadqiqotchilardan tortib tajribali olimlargacha uchun yaratilgan",
       "previewTitle": "Boshqaruv paneli ko'rinishi",

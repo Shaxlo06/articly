@@ -5,7 +5,7 @@
     "history": "History",
     "favorites": "Favorites",
     "login": "Login",
-    "signup": "Sign Up",
+    "signup": "Try Write",
     "logout": "Log out",
     "howItWorks": "How It Works",
     "pricing": "Pricing",
@@ -17,7 +17,7 @@
     "hero": {
       "title": "From first outline to published paper.",
       "subtitle": "ArticlyApp guides researchers through drafting, academic translation, journal matching, and Google Scholar indexing — one AI-assisted workspace, from scratch to submission-ready.",
-      "signupCta": "Sign Up free",
+      "signupCta": "Try Write",
       "loginCta": "Login",
       "tagline": "Built for researchers, from early-career to established academics",
       "previewTitle": "Dashboard preview",
