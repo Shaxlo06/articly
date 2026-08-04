@@ -1,26 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Reveal } from "./Reveal";
 
-const FAQS = [
-  {
-    q: "Do I need to pay to try it?",
-    a: "No — the Free plan lets you draft one article end-to-end with a limited number of AI runs per month.",
-  },
-  {
-    q: "Which languages are supported for translation?",
-    a: "Uzbek, English, and Russian at launch, with more academic language pairs planned.",
-  },
-  {
-    q: "Can ArticlyApp guarantee Google Scholar indexing?",
-    a: "No — we prepare your article's metadata and check readiness, but indexing itself is Google's decision and timeline.",
-  },
-];
+type Faq = { q: string; a: string };
 
 // No email backend is wired up yet — this only simulates a submission so the
 // form is demoable; wire a real endpoint before relying on it.
 export function Contact() {
+  const t = useTranslations("landing.contact");
+  const faqs = t.raw("faqs") as Faq[];
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -32,21 +22,21 @@ export function Contact() {
   return (
     <section id="contact" className="mx-auto max-w-6xl px-6 py-20">
       <div className="max-w-xl">
-        <p className="text-xs font-semibold uppercase tracking-wide text-accent-strong">Contact</p>
-        <h2 className="mt-2 font-serif text-3xl font-semibold">Questions before you start?</h2>
+        <p className="text-xs font-semibold uppercase tracking-wide text-accent-strong">{t("eyebrow")}</p>
+        <h2 className="mt-2 font-serif text-3xl font-semibold">{t("title")}</h2>
       </div>
 
       <div className="mt-10 grid md:grid-cols-2 gap-10">
         <div>
           {status === "sent" ? (
             <div className="rounded-lg border border-border bg-tint/40 p-6 text-sm">
-              Thanks — your message has been noted. We&apos;ll get back to you soon.
+              {t("form.sentNotice")}
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1" htmlFor="name">
-                  Name
+                  {t("form.nameLabel")}
                 </label>
                 <input
                   id="name"
@@ -56,7 +46,7 @@ export function Contact() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1" htmlFor="email">
-                  Email
+                  {t("form.emailLabel")}
                 </label>
                 <input
                   id="email"
@@ -67,7 +57,7 @@ export function Contact() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1" htmlFor="message">
-                  Message
+                  {t("form.messageLabel")}
                 </label>
                 <textarea
                   id="message"
@@ -81,19 +71,19 @@ export function Contact() {
                 disabled={status === "sending"}
                 className="text-sm font-semibold px-6 py-2.5 rounded-md bg-accent text-white hover:bg-accent-strong transition-colors disabled:opacity-60"
               >
-                {status === "sending" ? "Sending…" : "Send message"}
+                {status === "sending" ? t("form.sending") : t("form.sendCta")}
               </button>
             </form>
           )}
 
           <div className="mt-6 text-sm text-muted">
-            <p>Or reach us directly:</p>
+            <p>{t("form.reachDirectly")}</p>
             <p className="mt-1 font-medium text-foreground">support@articlyapp.com</p>
           </div>
         </div>
 
         <div className="space-y-3">
-          {FAQS.map((faq, i) => (
+          {faqs.map((faq, i) => (
             <Reveal key={faq.q} delayMs={i * 80}>
               <details className="rounded-lg border border-border bg-surface p-4 group transition-shadow hover:shadow-sm">
                 <summary className="cursor-pointer text-sm font-semibold list-none flex items-center justify-between">

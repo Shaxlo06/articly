@@ -2,36 +2,37 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Logo } from "@/components/Logo";
 
 const COLUMNS = [
   {
-    heading: "Product",
+    key: "product",
     links: [
-      { label: "How It Works", href: "#how-it-works" },
-      { label: "Pricing", href: "#pricing" },
-      { label: "Article Templates", href: "#" },
-      { label: "Journal Guides", href: "#" },
+      { key: "howItWorks", href: "#how-it-works" },
+      { key: "pricing", href: "#pricing" },
+      { key: "templates", href: "#" },
+      { key: "journalGuides", href: "#" },
     ],
   },
   {
-    heading: "Company",
+    key: "company",
     links: [
-      { label: "About", href: "#" },
-      { label: "Blog", href: "#" },
-      { label: "Careers", href: "#" },
-      { label: "Contact", href: "#contact" },
+      { key: "about", href: "#" },
+      { key: "blog", href: "#" },
+      { key: "careers", href: "#" },
+      { key: "contact", href: "#contact" },
     ],
   },
   {
-    heading: "Legal",
+    key: "legal",
     links: [
-      { label: "Privacy Policy", href: "#" },
-      { label: "Terms of Service", href: "#" },
-      { label: "Cookie Policy", href: "#" },
+      { key: "privacy", href: "#" },
+      { key: "terms", href: "#" },
+      { key: "cookies", href: "#" },
     ],
   },
-];
+] as const;
 
 const SOCIALS = [
   {
@@ -52,6 +53,7 @@ const SOCIALS = [
 ];
 
 export function Footer() {
+  const t = useTranslations("landing.footer");
   const [subscribed, setSubscribed] = useState(false);
 
   function handleSubscribe(e: React.FormEvent<HTMLFormElement>) {
@@ -64,9 +66,7 @@ export function Footer() {
       <div className="mx-auto max-w-6xl px-6 py-14 grid sm:grid-cols-2 md:grid-cols-5 gap-10">
         <div className="md:col-span-2">
           <Logo />
-          <p className="mt-3 text-sm text-muted max-w-xs">
-            From first outline to published paper.
-          </p>
+          <p className="mt-3 text-sm text-muted max-w-xs">{t("tagline")}</p>
 
           <div className="mt-5 flex items-center gap-3">
             {SOCIALS.map((social) => (
@@ -84,23 +84,25 @@ export function Footer() {
           </div>
 
           <form onSubmit={handleSubscribe} className="mt-6 max-w-xs">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted">Newsletter</p>
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted">
+              {t("newsletter.heading")}
+            </p>
             {subscribed ? (
-              <p className="mt-2 text-sm text-foreground/90">You&apos;re subscribed — thanks!</p>
+              <p className="mt-2 text-sm text-foreground/90">{t("newsletter.subscribedNotice")}</p>
             ) : (
               <div className="mt-2 flex gap-2">
                 <input
                   type="email"
                   required
-                  placeholder="you@university.edu"
-                  aria-label="Email for newsletter"
+                  placeholder={t("newsletter.placeholder")}
+                  aria-label={t("newsletter.emailAriaLabel")}
                   className="min-w-0 flex-1 rounded-md border border-border-strong bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
                 />
                 <button
                   type="submit"
                   className="shrink-0 text-sm font-semibold px-4 py-2 rounded-md bg-accent text-white hover:bg-accent-strong transition-colors"
                 >
-                  Subscribe
+                  {t("newsletter.subscribeCta")}
                 </button>
               </div>
             )}
@@ -108,13 +110,15 @@ export function Footer() {
         </div>
 
         {COLUMNS.map((col) => (
-          <div key={col.heading}>
-            <h4 className="text-xs font-semibold uppercase tracking-wide text-muted">{col.heading}</h4>
+          <div key={col.key}>
+            <h4 className="text-xs font-semibold uppercase tracking-wide text-muted">
+              {t(`columns.${col.key}.heading`)}
+            </h4>
             <ul className="mt-3 space-y-2">
               {col.links.map((link) => (
-                <li key={link.label}>
+                <li key={link.key}>
                   <Link href={link.href} className="text-sm hover:text-accent-strong transition-colors">
-                    {link.label}
+                    {t(`columns.${col.key}.links.${link.key}`)}
                   </Link>
                 </li>
               ))}
@@ -125,7 +129,7 @@ export function Footer() {
 
       <div className="border-t border-border">
         <div className="mx-auto max-w-6xl px-6 py-6 text-xs text-muted">
-          © {new Date().getFullYear()} ArticlyApp. All rights reserved.
+          {t("copyright", { year: new Date().getFullYear() })}
         </div>
       </div>
     </footer>

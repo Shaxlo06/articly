@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Link } from "@/i18n/navigation";
 import type { Journal, JournalCategory } from "@prisma/client";
 import { JournalCard } from "./JournalCard";
 
@@ -73,7 +74,7 @@ export function JournalGroupTabs({ results, advancedFilters }: { results: Journa
           </select>
         ) : (
           <span className="text-xs text-muted">
-            Sort options are a <a href="/account" className="underline font-semibold text-accent-strong">Max plan</a> feature
+            Sort options are a <Link href="/account" className="underline font-semibold text-accent-strong">Max plan</Link> feature
           </span>
         )}
       </div>

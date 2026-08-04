@@ -1,5 +1,6 @@
 "use client";
 
+import { Link } from "@/i18n/navigation";
 import { useJobPolling, type JobState } from "@/hooks/useJobPolling";
 import { AsyncJobStatus } from "@/components/AsyncJobStatus";
 import { JournalGroupTabs, type JournalResult } from "@/components/JournalGroupTabs";
@@ -38,7 +39,7 @@ export function JournalJobView({ initial, advancedFilters }: { initial: JobState
           {output.shownMatches < output.totalMatches && (
             <p className="text-sm text-muted">
               Showing {output.shownMatches} of {output.totalMatches} matches —{" "}
-              <a href="/account" className="underline font-semibold text-accent-strong">upgrade</a> to see the full list.
+              <Link href="/account" className="underline font-semibold text-accent-strong">upgrade</Link> to see the full list.
             </p>
           )}
 

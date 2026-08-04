@@ -1,0 +1,257 @@
+{
+  "nav": {
+    "dashboard": "Boshqaruv paneli",
+    "indexing": "Scholar indekslash",
+    "history": "Tarix",
+    "favorites": "Sevimlilar",
+    "login": "Kirish",
+    "signup": "Ro'yxatdan o'tish",
+    "logout": "Chiqish",
+    "howItWorks": "Qanday ishlaydi",
+    "pricing": "Narxlar",
+    "contact": "Aloqa",
+    "selectLanguage": "Tilni tanlang",
+    "goToDashboard": "Boshqaruv paneliga o'tish"
+  },
+  "landing": {
+    "hero": {
+      "title": "Birinchi rejadan nashr etilgan maqolagacha.",
+      "subtitle": "ArticlyApp tadqiqotchilarga maqola yozish, ilmiy tarjima, jurnal tanlash va Google Scholar'da indekslanish jarayonlarida yordam beradi — noldan taqdim etishga tayyor bo'lgunga qadar, yagona AI yordamchi ish maydonida.",
+      "signupCta": "Bepul ro'yxatdan o'ting",
+      "loginCta": "Kirish",
+      "tagline": "Yosh tadqiqotchilardan tortib tajribali olimlargacha uchun yaratilgan",
+      "previewTitle": "Boshqaruv paneli ko'rinishi",
+      "previewBadge": "Demo",
+      "previewRows": [
+        {
+          "label": "Maqolani tahrirlash",
+          "detail": "Muhokama bo'limi — 3-qoralama"
+        },
+        {
+          "label": "Humanize",
+          "detail": "AI aniqlash darajasi 63% → 12%"
+        },
+        {
+          "label": "Jurnal moslashuvi",
+          "detail": "94% — Scopus Q1"
+        }
+      ]
+    },
+    "loop": {
+      "eyebrow": "Qanday ishlaydi",
+      "title": "Bitta ish maydoni, nashrgacha to'rt qadam.",
+      "steps": [
+        {
+          "n": "01",
+          "title": "Yozish va tuzilma",
+          "description": "AI yordamidagi IMRAD uslubidagi yozish rejani to'liq, bo'lim-bo'lim maqolaga aylantiradi."
+        },
+        {
+          "n": "02",
+          "title": "Ilmiy tarjima",
+          "description": "Ko'p tilli tarjima nafaqat so'zlarni, balki ilmiy uslub va terminologiyani ham saqlab qoladi."
+        },
+        {
+          "n": "03",
+          "title": "Mos jurnallarni tanlash",
+          "description": "Soha, sifat va moslikka ko'ra tartiblangan tavsiyalar — OAK jurnallaridan Scopus indeksidagi jurnallargacha."
+        },
+        {
+          "n": "04",
+          "title": "Scholar'da indekslanish",
+          "description": "Nashr etilgan maqolangiz haqiqatan ham topilishi uchun tayyorgarlik tekshiruvlari va metama'lumotlar."
+        }
+      ]
+    },
+    "pricing": {
+      "eyebrow": "Narxlar",
+      "title": "Oddiy va shaffof narxlar.",
+      "recommended": "Tavsiya etiladi",
+      "disclaimer": "Ko'rsatilgan narxlar yakuniy to'lov tizimi ishga tushirilguncha taxminiy ko'rsatkichlardir — hozircha to'lov provayderi ulanmagan.",
+      "plans": [
+        {
+          "tier": "Bepul",
+          "price": "$0",
+          "cadence": "abadiy",
+          "who": "Bitta maqolada ish jarayonini sinab ko'rish uchun",
+          "features": [
+            "1 faol maqola, 20 ta AI bo'lim yaratish",
+            "Humanize: oyiga 2 marta",
+            "Tarjima: oyiga 3 marta",
+            "Top 3 jurnal moslashuvi",
+            "Faqat PDF eksport",
+            "1 ta saqlangan versiya"
+          ],
+          "cta": "Bepul boshlash"
+        },
+        {
+          "tier": "Pro",
+          "price": "$19",
+          "cadence": "/ oyiga",
+          "who": "Maqolalarni topshirishga faol tayyorlayotgan tadqiqotchilar uchun",
+          "features": [
+            "10 faol maqola, 200 ta AI bo'lim yaratish",
+            "Humanize: oyiga 20 marta",
+            "Tarjima: bir nechta til juftligi, oyiga 30 marta",
+            "To'liq jurnal moslashuvlari ro'yxati",
+            "Plagiat tekshiruvi kiritilgan",
+            "Word / PDF / TXT eksport",
+            "10 ta saqlangan versiya"
+          ],
+          "cta": "Pro'ga o'tish"
+        },
+        {
+          "tier": "Max",
+          "price": "$49",
+          "cadence": "/ oyiga",
+          "who": "Cheklovlarsiz ishlashi kerak bo'lgan laboratoriyalar va faol mualliflar uchun",
+          "features": [
+            "Cheksiz faol maqolalar va AI generatsiyalari",
+            "Cheksiz humanize ishga tushirishlari",
+            "Barcha til juftliklari, ustuvor tarjima",
+            "To'liq moslashuvlar ro'yxati + kengaytirilgan filtrlar",
+            "Plagiat tekshiruvi kiritilgan",
+            "Word / PDF / TXT eksport",
+            "Cheksiz versiyalar tarixi"
+          ],
+          "cta": "Max'ga o'tish"
+        }
+      ]
+    },
+    "contact": {
+      "eyebrow": "Aloqa",
+      "title": "Boshlashdan oldin savollaringiz bormi?",
+      "form": {
+        "nameLabel": "Ism",
+        "emailLabel": "Email",
+        "messageLabel": "Xabar",
+        "sendCta": "Xabar yuborish",
+        "sending": "Yuborilmoqda…",
+        "sentNotice": "Rahmat — xabaringiz qabul qilindi. Tez orada siz bilan bog'lanamiz.",
+        "reachDirectly": "Yoki biz bilan to'g'ridan-to'g'ri bog'laning:"
+      },
+      "faqs": [
+        {
+          "q": "Sinab ko'rish uchun to'lov qilishim kerakmi?",
+          "a": "Yo'q — Bepul reja bitta maqolani boshidan oxirigacha, oyiga cheklangan miqdordagi AI ishga tushirishlar bilan yozish imkonini beradi."
+        },
+        {
+          "q": "Tarjima uchun qaysi tillar qo'llab-quvvatlanadi?",
+          "a": "Ishga tushirishda o'zbek, ingliz va rus tillari, kelajakda yana ilmiy til juftliklari qo'shiladi."
+        },
+        {
+          "q": "ArticlyApp Google Scholar'da indekslanishga kafolat bera oladimi?",
+          "a": "Yo'q — biz maqolangiz metama'lumotlarini tayyorlaymiz va tayyorligini tekshiramiz, biroq indekslanishning o'zi Google'ning qarori va vaqt jadvaliga bog'liq."
+        }
+      ]
+    },
+    "footer": {
+      "tagline": "Birinchi rejadan nashr etilgan maqolagacha.",
+      "newsletter": {
+        "heading": "Yangiliklar",
+        "placeholder": "siz@universitet.edu",
+        "emailAriaLabel": "Yangiliklar uchun email",
+        "subscribeCta": "Obuna bo'lish",
+        "subscribedNotice": "Siz obuna bo'ldingiz — rahmat!"
+      },
+      "columns": {
+        "product": {
+          "heading": "Mahsulot",
+          "links": {
+            "howItWorks": "Qanday ishlaydi",
+            "pricing": "Narxlar",
+            "templates": "Maqola shablonlari",
+            "journalGuides": "Jurnal qo'llanmalari"
+          }
+        },
+        "company": {
+          "heading": "Kompaniya",
+          "links": {
+            "about": "Biz haqimizda",
+            "blog": "Blog",
+            "careers": "Karyera",
+            "contact": "Aloqa"
+          }
+        },
+        "legal": {
+          "heading": "Huquqiy",
+          "links": {
+            "privacy": "Maxfiylik siyosati",
+            "terms": "Foydalanish shartlari",
+            "cookies": "Cookie siyosati"
+          }
+        }
+      },
+      "copyright": "© {year} ArticlyApp. Barcha huquqlar himoyalangan."
+    }
+  },
+  "auth": {
+    "modal": {
+      "title": "ArticlyApp'ga xush kelibsiz",
+      "subtitle": "Davom etish usulini tanlang",
+      "close": "Yopish",
+      "back": "Orqaga",
+      "loginOption": "Kirish",
+      "signupOption": "Ro'yxatdan o'tish",
+      "googleOption": "Google orqali davom etish",
+      "or": "yoki"
+    },
+    "login": {
+      "heading": "Kirish",
+      "emailLabel": "Email",
+      "passwordLabel": "Parol",
+      "forgotPassword": "Parolni unutdingizmi?",
+      "submitCta": "Kirish",
+      "submitting": "Kirilmoqda…",
+      "noAccount": "Hisobingiz yo'qmi?",
+      "signupLink": "Ro'yxatdan o'tish",
+      "googleCta": "Google orqali davom etish",
+      "or": "yoki",
+      "errorInvalidCredentials": "Email yoki parol noto'g'ri.",
+      "errorEmailNotConfirmed": "Kirishdan oldin emailingizni tasdiqlang.",
+      "genericError": "Kirib bo'lmadi. Qaytadan urinib ko'ring."
+    },
+    "signup": {
+      "heading": "Ro'yxatdan o'tish",
+      "nameLabel": "To'liq ism",
+      "emailLabel": "Email",
+      "passwordLabel": "Parol",
+      "confirmPasswordLabel": "Parolni tasdiqlang",
+      "termsLabel": "Foydalanish shartlariga roziman",
+      "submitCta": "Ro'yxatdan o'tish",
+      "submitting": "Ro'yxatdan o'tilmoqda…",
+      "haveAccount": "Hisobingiz bormi?",
+      "loginLink": "Kirish",
+      "googleCta": "Google orqali davom etish",
+      "or": "yoki",
+      "passwordMismatch": "Parollar mos kelmadi.",
+      "termsRequired": "Davom etish uchun Foydalanish shartlarini qabul qiling.",
+      "confirmEmailNotice": "Tasdiqlash havolasi uchun {email} manzilini tekshiring, so'ng kiring.",
+      "errorUserExists": "Bu email bilan hisob allaqachon mavjud.",
+      "errorWeakPassword": "Kuchliroq parol tanlang (kamida 6 ta belgi).",
+      "genericError": "Hisob yaratib bo'lmadi. Qaytadan urinib ko'ring."
+    },
+    "forgotPassword": {
+      "heading": "Parolni tiklash",
+      "description": "Emailingizni kiriting, biz sizga parolni tiklash uchun havola yuboramiz.",
+      "emailLabel": "Email",
+      "sendCta": "Havola yuborish",
+      "sending": "Yuborilmoqda…",
+      "sentNotice": "Parolni tiklash havolasi uchun {email} manzilini tekshiring.",
+      "backToLogin": "Kirishga qaytish",
+      "genericError": "Havolani yuborib bo'lmadi. Qaytadan urinib ko'ring."
+    },
+    "resetPassword": {
+      "heading": "Yangi parol o'rnatish",
+      "newPasswordLabel": "Yangi parol",
+      "confirmPasswordLabel": "Yangi parolni tasdiqlang",
+      "saveCta": "Yangi parolni saqlash",
+      "saving": "Saqlanmoqda…",
+      "passwordMismatch": "Parollar mos kelmadi.",
+      "successNotice": "Parolingiz yangilandi.",
+      "invalidLinkNotice": "Bu havola yaroqsiz yoki muddati o'tgan. Kirish sahifasidan yangisini so'rang.",
+      "goToLogin": "Kirishga o'tish",
+      "genericError": "Parolni yangilab bo'lmadi. Qaytadan urinib ko'ring."
+    }
+  }
+}

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import type { PlanTier } from "@prisma/client";
 
 const PLAN_LABEL: Record<PlanTier, string> = {

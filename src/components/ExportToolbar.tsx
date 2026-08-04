@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Link } from "@/i18n/navigation";
 
 const FORMATS = [
   { key: "docx", label: "Word" },
@@ -68,7 +69,7 @@ export function ExportToolbar({
       </div>
       {notice && (
         <p className="text-sm text-accent-strong">
-          {notice} <a href="/account" className="underline font-semibold">Upgrade plan</a>
+          {notice} <Link href="/account" className="underline font-semibold">Upgrade plan</Link>
         </p>
       )}
     </div>

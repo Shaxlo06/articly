@@ -1,0 +1,257 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "indexing": "Scholar Indexing",
+    "history": "History",
+    "favorites": "Favorites",
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Log out",
+    "howItWorks": "How It Works",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "selectLanguage": "Select language",
+    "goToDashboard": "Go to Dashboard"
+  },
+  "landing": {
+    "hero": {
+      "title": "From first outline to published paper.",
+      "subtitle": "ArticlyApp guides researchers through drafting, academic translation, journal matching, and Google Scholar indexing — one AI-assisted workspace, from scratch to submission-ready.",
+      "signupCta": "Sign Up free",
+      "loginCta": "Login",
+      "tagline": "Built for researchers, from early-career to established academics",
+      "previewTitle": "Dashboard preview",
+      "previewBadge": "Demo",
+      "previewRows": [
+        {
+          "label": "Edit Article",
+          "detail": "Discussion section — draft 3"
+        },
+        {
+          "label": "Humanize",
+          "detail": "AI-detection score 63% → 12%"
+        },
+        {
+          "label": "Journal Match",
+          "detail": "94% — Scopus Q1"
+        }
+      ]
+    },
+    "loop": {
+      "eyebrow": "How it works",
+      "title": "One workspace, four steps to publication.",
+      "steps": [
+        {
+          "n": "01",
+          "title": "Write & structure",
+          "description": "AI-guided IMRAD drafting turns an outline into a full, section-by-section article."
+        },
+        {
+          "n": "02",
+          "title": "Translate academically",
+          "description": "Multi-language translation that preserves scientific register and terminology, not just words."
+        },
+        {
+          "n": "03",
+          "title": "Match the right journals",
+          "description": "Ranked recommendations by field, quality, and fit — from OAK titles to Scopus-indexed journals."
+        },
+        {
+          "n": "04",
+          "title": "Get indexed on Scholar",
+          "description": "Readiness checks and metadata so your published article is actually discoverable."
+        }
+      ]
+    },
+    "pricing": {
+      "eyebrow": "Pricing",
+      "title": "Simple, transparent pricing.",
+      "recommended": "Recommended",
+      "disclaimer": "Prices shown are indicative placeholders pending final billing setup — no payment provider is wired up yet.",
+      "plans": [
+        {
+          "tier": "Free",
+          "price": "$0",
+          "cadence": "forever",
+          "who": "Trying out the workflow on a single article",
+          "features": [
+            "1 active article, 20 AI section generations",
+            "Humanize: 2 runs / month",
+            "Translate: 3 runs / month",
+            "Top 3 journal matches",
+            "PDF export only",
+            "1 saved version"
+          ],
+          "cta": "Start free"
+        },
+        {
+          "tier": "Pro",
+          "price": "$19",
+          "cadence": "/ month",
+          "who": "Researchers actively preparing articles for submission",
+          "features": [
+            "10 active articles, 200 AI section generations",
+            "Humanize: 20 runs / month",
+            "Translate: multiple language pairs, 30 runs / month",
+            "Full journal match list",
+            "Plagiarism check included",
+            "Word / PDF / TXT export",
+            "10 saved versions"
+          ],
+          "cta": "Upgrade to Pro"
+        },
+        {
+          "tier": "Max",
+          "price": "$49",
+          "cadence": "/ month",
+          "who": "Labs and frequent publishers who need no limits",
+          "features": [
+            "Unlimited active articles & AI generations",
+            "Unlimited humanize runs",
+            "All language pairs, priority translation",
+            "Full match list + advanced filters",
+            "Plagiarism check included",
+            "Word / PDF / TXT export",
+            "Unlimited version history"
+          ],
+          "cta": "Go Max"
+        }
+      ]
+    },
+    "contact": {
+      "eyebrow": "Contact",
+      "title": "Questions before you start?",
+      "form": {
+        "nameLabel": "Name",
+        "emailLabel": "Email",
+        "messageLabel": "Message",
+        "sendCta": "Send message",
+        "sending": "Sending…",
+        "sentNotice": "Thanks — your message has been noted. We'll get back to you soon.",
+        "reachDirectly": "Or reach us directly:"
+      },
+      "faqs": [
+        {
+          "q": "Do I need to pay to try it?",
+          "a": "No — the Free plan lets you draft one article end-to-end with a limited number of AI runs per month."
+        },
+        {
+          "q": "Which languages are supported for translation?",
+          "a": "Uzbek, English, and Russian at launch, with more academic language pairs planned."
+        },
+        {
+          "q": "Can ArticlyApp guarantee Google Scholar indexing?",
+          "a": "No — we prepare your article's metadata and check readiness, but indexing itself is Google's decision and timeline."
+        }
+      ]
+    },
+    "footer": {
+      "tagline": "From first outline to published paper.",
+      "newsletter": {
+        "heading": "Newsletter",
+        "placeholder": "you@university.edu",
+        "emailAriaLabel": "Email for newsletter",
+        "subscribeCta": "Subscribe",
+        "subscribedNotice": "You're subscribed — thanks!"
+      },
+      "columns": {
+        "product": {
+          "heading": "Product",
+          "links": {
+            "howItWorks": "How It Works",
+            "pricing": "Pricing",
+            "templates": "Article Templates",
+            "journalGuides": "Journal Guides"
+          }
+        },
+        "company": {
+          "heading": "Company",
+          "links": {
+            "about": "About",
+            "blog": "Blog",
+            "careers": "Careers",
+            "contact": "Contact"
+          }
+        },
+        "legal": {
+          "heading": "Legal",
+          "links": {
+            "privacy": "Privacy Policy",
+            "terms": "Terms of Service",
+            "cookies": "Cookie Policy"
+          }
+        }
+      },
+      "copyright": "© {year} ArticlyApp. All rights reserved."
+    }
+  },
+  "auth": {
+    "modal": {
+      "title": "Welcome to ArticlyApp",
+      "subtitle": "Choose how you'd like to continue",
+      "close": "Close",
+      "back": "Back",
+      "loginOption": "Login",
+      "signupOption": "Sign Up",
+      "googleOption": "Continue with Google",
+      "or": "or"
+    },
+    "login": {
+      "heading": "Log in",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "forgotPassword": "Forgot password?",
+      "submitCta": "Log in",
+      "submitting": "Logging in…",
+      "noAccount": "Don't have an account?",
+      "signupLink": "Sign Up",
+      "googleCta": "Continue with Google",
+      "or": "or",
+      "errorInvalidCredentials": "Incorrect email or password.",
+      "errorEmailNotConfirmed": "Please confirm your email before logging in.",
+      "genericError": "Couldn't log in. Please try again."
+    },
+    "signup": {
+      "heading": "Sign up",
+      "nameLabel": "Full name",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "confirmPasswordLabel": "Confirm password",
+      "termsLabel": "I agree to the Terms of Service",
+      "submitCta": "Sign up",
+      "submitting": "Signing up…",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in",
+      "googleCta": "Continue with Google",
+      "or": "or",
+      "passwordMismatch": "Passwords don't match.",
+      "termsRequired": "Please accept the Terms of Service to continue.",
+      "confirmEmailNotice": "Check {email} for a confirmation link, then log in.",
+      "errorUserExists": "An account with this email already exists.",
+      "errorWeakPassword": "Choose a stronger password (at least 6 characters).",
+      "genericError": "Couldn't create your account. Please try again."
+    },
+    "forgotPassword": {
+      "heading": "Reset your password",
+      "description": "Enter your email and we'll send you a link to reset your password.",
+      "emailLabel": "Email",
+      "sendCta": "Send reset link",
+      "sending": "Sending…",
+      "sentNotice": "Check {email} for a link to reset your password.",
+      "backToLogin": "Back to login",
+      "genericError": "Couldn't send the reset link. Please try again."
+    },
+    "resetPassword": {
+      "heading": "Set a new password",
+      "newPasswordLabel": "New password",
+      "confirmPasswordLabel": "Confirm new password",
+      "saveCta": "Save new password",
+      "saving": "Saving…",
+      "passwordMismatch": "Passwords don't match.",
+      "successNotice": "Your password has been updated.",
+      "invalidLinkNotice": "This reset link is invalid or has expired. Request a new one from the login screen.",
+      "goToLogin": "Go to login",
+      "genericError": "Couldn't update your password. Please try again."
+    }
+  }
+}

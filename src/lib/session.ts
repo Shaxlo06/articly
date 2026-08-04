@@ -23,13 +23,18 @@ export async function getOptionalCurrentUser() {
 
   if (!authUser) return null;
 
+  // Email/password signup passes `name` via signUp's options.data; Google
+  // populates `name`/`full_name` itself. Either way we get a real name on
+  // first login instead of leaving it blank for the user to fill in later.
+  const metadataName = authUser.user_metadata?.name ?? authUser.user_metadata?.full_name ?? "";
+
   return prisma.user.upsert({
     where: { authId: authUser.id },
     update: {},
     create: {
       authId: authUser.id,
       email: authUser.email ?? `${authUser.id}@users.noreply.articly`,
-      name: "",
+      name: typeof metadataName === "string" ? metadataName.trim() : "",
       field: "",
       subscription: { create: { plan: "FREE" } },
     },

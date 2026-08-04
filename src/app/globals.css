@@ -34,21 +34,19 @@
   --font-serif: var(--font-source-serif);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #10171c;
-    --surface: #182129;
-    --tint: #13232b;
-    --silver: rgba(255, 255, 255, 0.24);
-    --silver-wash: #1b1d20;
-    --foreground: #e7eef1;
-    --muted: #93a2aa;
-    --border: rgba(255, 255, 255, 0.1);
-    --border-strong: rgba(255, 255, 255, 0.24);
-    --accent: #f0975f;
-    --accent-strong: #f0975f;
-    --accent-soft: rgba(240, 151, 95, 0.18);
-  }
+.dark {
+  --background: #10171c;
+  --surface: #182129;
+  --tint: #13232b;
+  --silver: rgba(255, 255, 255, 0.24);
+  --silver-wash: #1b1d20;
+  --foreground: #e7eef1;
+  --muted: #93a2aa;
+  --border: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.24);
+  --accent: #f0975f;
+  --accent-strong: #f0975f;
+  --accent-soft: rgba(240, 151, 95, 0.18);
 }
 
 body {

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Link } from "@/i18n/navigation";
 import type { Article, ArticleSection } from "@prisma/client";
 import { Stepper } from "./Stepper";
 import { LanguageSelector } from "./LanguageSelector";
@@ -206,7 +207,7 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
                 ) : (
                   <p className="text-muted">
                     Plagiarism check isn&apos;t included in your plan.{" "}
-                    <a href="/account" className="underline font-semibold text-accent-strong">Upgrade</a>
+                    <Link href="/account" className="underline font-semibold text-accent-strong">Upgrade</Link>
                   </p>
                 )}
               </div>
