@@ -22,18 +22,18 @@ function UserIcon() {
   );
 }
 
-function SunIcon() {
+function SunIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className={className}>
       <circle cx="12" cy="12" r="4" />
       <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
     </svg>
   );
 }
 
-function MoonIcon() {
+function MoonIcon({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className={className}>
       <path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z" />
     </svg>
   );
@@ -154,8 +154,16 @@ export function UserMenu({ name }: { name: string }) {
             onKeyDown={(e) => onItemKeyDown(e, 1)}
             className="w-full flex items-center justify-between rounded-md px-2.5 py-1.5 text-sm text-foreground hover:bg-tint transition-colors"
           >
-            <span>{isDark ? "Tungi rejim" : "Kunduzgi rejim"}</span>
-            {isDark ? <MoonIcon /> : <SunIcon />}
+            <span>Mode</span>
+            <span className={`relative h-5 w-9 shrink-0 rounded-full transition-colors ${isDark ? "bg-accent" : "bg-silver"}`}>
+              <span
+                className={`absolute top-0.5 left-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform flex items-center justify-center ${
+                  isDark ? "translate-x-4" : "translate-x-0"
+                }`}
+              >
+                {isDark ? <MoonIcon className="h-2.5 w-2.5 text-accent-strong" /> : <SunIcon className="h-2.5 w-2.5 text-muted" />}
+              </span>
+            </span>
           </button>
           <button
             ref={(el) => {
