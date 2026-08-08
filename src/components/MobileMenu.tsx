@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { NAV_TABS } from "./nav/tabsConfig";
 import { LanguageSwitcher } from "./language/LanguageSwitcher";
-import { ThemeToggle } from "./theme/ThemeToggle";
 
 function MenuIcon() {
   return (
@@ -82,7 +81,6 @@ function Panel({ name, onClose }: { name: string; onClose: () => void }) {
           <p className="font-semibold truncate">{name}</p>
           <div className="flex items-center gap-2 flex-wrap">
             <LanguageSwitcher />
-            <ThemeToggle />
           </div>
         </div>
 

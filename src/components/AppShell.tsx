@@ -1,7 +1,6 @@
 import { Link } from "@/i18n/navigation";
 import { getCurrentUser } from "@/lib/session";
 import { Logo } from "./Logo";
-import { ThemeToggle } from "./theme/ThemeToggle";
 import { LanguageSwitcher } from "./language/LanguageSwitcher";
 import { UserMenu } from "./UserMenu";
 import { NavTabs } from "./NavTabs";
@@ -26,7 +25,6 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
 
           <div className="hidden sm:flex items-center gap-2 lg:gap-3 shrink-0 ml-auto">
             <LanguageSwitcher />
-            <ThemeToggle />
             <UserMenu name={displayName} />
           </div>
 
