@@ -1,6 +1,10 @@
 {
   "nav": {
     "dashboard": "Панель управления",
+    "editArticle": "Редактировать статью",
+    "translate": "Академический перевод",
+    "journals": "Журналы",
+    "humanize": "Humanize",
     "indexing": "Индексация Scholar",
     "history": "История",
     "favorites": "Избранное",

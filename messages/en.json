@@ -1,6 +1,10 @@
 {
   "nav": {
     "dashboard": "Dashboard",
+    "editArticle": "Edit Article",
+    "translate": "Academic Translate",
+    "journals": "Journals",
+    "humanize": "Humanize",
     "indexing": "Scholar Indexing",
     "history": "History",
     "favorites": "Favorites",

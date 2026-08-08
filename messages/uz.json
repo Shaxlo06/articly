@@ -1,6 +1,10 @@
 {
   "nav": {
-    "dashboard": "Boshqaruv paneli",
+    "dashboard": "Bosh sahifa",
+    "editArticle": "Maqola tahrirlash",
+    "translate": "Academic tarjima",
+    "journals": "Jurnallar",
+    "humanize": "Humanize",
     "indexing": "Scholar indekslash",
     "history": "Tarix",
     "favorites": "Sevimlilar",

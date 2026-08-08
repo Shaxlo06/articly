@@ -1,57 +1,52 @@
-import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getCurrentUser } from "@/lib/session";
 import { PlanBadge } from "./PlanBadge";
 import { Logo } from "./Logo";
-import { LogoutButton } from "./LogoutButton";
 import { ThemeToggle } from "./theme/ThemeToggle";
 import { LanguageSwitcher } from "./language/LanguageSwitcher";
+import { UserMenu } from "./UserMenu";
+import { NavTabs } from "./NavTabs";
 import { SessionGuard } from "./SessionGuard";
 
-const NAV_LINKS = [
-  { href: "/dashboard", key: "dashboard" },
-  { href: "/indexing/new", key: "indexing" },
-  { href: "/history", key: "history" },
-  { href: "/favorites", key: "favorites" },
-] as const;
+function SearchIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="7" />
+      <path d="m21 21-4.3-4.3" />
+    </svg>
+  );
+}
 
 export async function AppShell({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser();
-  const t = await getTranslations("nav");
 
   return (
     <div className="min-h-screen flex flex-col">
       <SessionGuard />
       <header className="border-b border-border bg-surface">
         <div className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between gap-6">
-          <Link href="/dashboard">
+          <Link href="/dashboard" className="shrink-0">
             <Logo />
           </Link>
 
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-            {NAV_LINKS.map((link) => (
-              <Link key={link.href} href={link.href} className="hover:text-accent-strong transition-colors">
-                {t(link.key)}
-              </Link>
-            ))}
-          </nav>
+          <div className="hidden md:flex flex-1 max-w-md items-center gap-2 rounded-full border border-border-strong bg-background px-4 h-9 text-sm text-muted">
+            <SearchIcon />
+            <input
+              type="text"
+              placeholder="Qidiruv: maqola, jurnal, muallif..."
+              className="flex-1 bg-transparent outline-none placeholder:text-muted"
+            />
+          </div>
 
-          <div className="flex items-center gap-3">
-            <span className="hidden sm:inline text-xs text-muted uppercase tracking-wide">
-              {user.preferredLanguage}
-            </span>
+          <div className="flex items-center gap-3 shrink-0">
             {user.subscription && <PlanBadge plan={user.subscription.plan} />}
             <LanguageSwitcher />
             <ThemeToggle />
-            <Link
-              href="/account"
-              className="h-8 w-8 rounded-full bg-tint border border-border-strong flex items-center justify-center text-xs font-semibold"
-              title={user.name || user.email}
-            >
-              {(user.name.trim() || user.email).slice(0, 1).toUpperCase()}
-            </Link>
-            <LogoutButton />
+            <UserMenu name={user.name || user.email.split("@")[0]} />
           </div>
+        </div>
+        <div className="border-t border-border">
+          <NavTabs />
         </div>
       </header>
       <main className="flex-1 mx-auto w-full max-w-6xl px-6 py-10">{children}</main>
