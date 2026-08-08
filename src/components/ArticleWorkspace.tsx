@@ -9,6 +9,7 @@ import { SectionEditor } from "./SectionEditor";
 import { RecommendationList, type Issue } from "./RecommendationList";
 import { VersionHistoryPanel } from "./VersionHistoryPanel";
 import { ExportToolbar } from "./ExportToolbar";
+import { DocumentPreview } from "./DocumentPreview";
 
 const STEPS = [
   { key: "topic", label: "Topic" },
@@ -35,8 +36,12 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
   const [topic, setTopic] = useState(initialArticle.title);
   const [field, setField] = useState(initialArticle.field);
   const [language, setLanguage] = useState(initialArticle.language);
+  const [authors, setAuthors] = useState(initialArticle.authors ?? "");
+  const [affiliation, setAffiliation] = useState(initialArticle.affiliation ?? "");
+  const [keywords, setKeywords] = useState(initialArticle.keywords ?? "");
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [busy, setBusy] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   const stepIndex = STEPS.findIndex((s) => s.key === step);
   function goTo(key: StepKey) {
@@ -55,7 +60,7 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
       const res = await fetch(`/api/articles/${article.id}/topic`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topic, field, language }),
+        body: JSON.stringify({ topic, field, language, authors, affiliation, keywords }),
       });
       const data = await res.json();
       if (res.ok) setArticle(data.article);
@@ -128,6 +133,33 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
               className="rounded-md border border-border-strong p-3 focus:border-accent-strong focus:outline-none"
             />
           </label>
+          <label className="flex flex-col gap-1.5 text-sm">
+            <span className="font-semibold">Author(s)</span>
+            <input
+              value={authors}
+              onChange={(e) => setAuthors(e.target.value)}
+              placeholder="e.g. Jane Doe, John Smith"
+              className="rounded-md border border-border-strong p-3 focus:border-accent-strong focus:outline-none"
+            />
+          </label>
+          <label className="flex flex-col gap-1.5 text-sm">
+            <span className="font-semibold">Affiliation</span>
+            <input
+              value={affiliation}
+              onChange={(e) => setAffiliation(e.target.value)}
+              placeholder="e.g. Department of Biology, University X"
+              className="rounded-md border border-border-strong p-3 focus:border-accent-strong focus:outline-none"
+            />
+          </label>
+          <label className="flex flex-col gap-1.5 text-sm">
+            <span className="font-semibold">Keywords</span>
+            <input
+              value={keywords}
+              onChange={(e) => setKeywords(e.target.value)}
+              placeholder="comma-separated, e.g. urban ecology, cognition, restoration"
+              className="rounded-md border border-border-strong p-3 focus:border-accent-strong focus:outline-none"
+            />
+          </label>
           <StepActions onNext={next} nextLabel="Continue" busy={busy} />
         </div>
       )}
@@ -175,14 +207,31 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
 
       {(step === "draft" || step === "edit") && (
         <div className="flex flex-col gap-4">
-          <p className="text-sm text-muted max-w-2xl">
-            {step === "draft"
-              ? "Generate a first pass for each section, then move on to polish the prose."
-              : "Refine the wording directly, or ask the engine to expand or tighten a section."}
-          </p>
-          {sections.map((s) => (
-            <SectionEditor key={s.id} articleId={article.id} section={s} onChange={updateSection} />
-          ))}
+          <div className="flex items-center justify-between max-w-2xl">
+            <p className="text-sm text-muted">
+              {step === "draft"
+                ? "Generate a first pass for each section, then move on to polish the prose."
+                : "Refine the wording directly, or ask the engine to expand or tighten a section."}
+            </p>
+            <button
+              onClick={() => setShowPreview((v) => !v)}
+              className="shrink-0 rounded-md border border-border-strong px-3 py-1.5 text-xs font-semibold hover:border-accent-strong"
+            >
+              {showPreview ? "Hide A4 preview" : "Show A4 preview"}
+            </button>
+          </div>
+          <div className={showPreview ? "grid gap-4 lg:grid-cols-2 items-start" : ""}>
+            <div className="flex flex-col gap-4">
+              {sections.map((s) => (
+                <SectionEditor key={s.id} articleId={article.id} section={s} onChange={updateSection} />
+              ))}
+            </div>
+            {showPreview && (
+              <div className="lg:sticky lg:top-4">
+                <DocumentPreview title={topic} authors={authors} affiliation={affiliation} keywords={keywords} sections={sections} />
+              </div>
+            )}
+          </div>
           <StepActions onBack={back} onNext={next} nextLabel="Continue" busy={busy} />
         </div>
       )}
@@ -222,6 +271,10 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
           <RecommendationList title="Grammar" issues={analysis.quality.grammar} />
           <RecommendationList title="Style & tone" issues={analysis.quality.style} />
           <RecommendationList title="Formatting & citation consistency" issues={analysis.quality.formatting} />
+          <div>
+            <h3 className="font-serif text-lg font-semibold mb-2">Document preview (A4)</h3>
+            <DocumentPreview title={topic} authors={authors} affiliation={affiliation} keywords={keywords} sections={sections} />
+          </div>
           <StepActions onBack={back} onNext={next} nextLabel="Continue to final" busy={busy} />
         </div>
       )}

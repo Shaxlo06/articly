@@ -12,16 +12,17 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
   const article = await prisma.article.findUnique({ where: { id }, include: { sections: true } });
   if (!article || article.ownerId !== user.id) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  const fullText = article.sections
-    .sort((a, b) => a.order - b.order)
-    .map((s) => s.content)
-    .join("\n\n");
+  const sortedSections = article.sections.sort((a, b) => a.order - b.order);
+  const fullText = sortedSections.map((s) => s.content).join("\n\n");
 
   const job = await prisma.engineJob.create({
     data: { userId: user.id, articleId: id, type: "ANALYZE_QUALITY", status: "PROCESSING", input: JSON.stringify({}) },
   });
 
-  const quality = await analyzeQuality(fullText);
+  const quality = await analyzeQuality(
+    fullText,
+    sortedSections.map((s) => ({ key: s.key, title: s.title, content: s.content }))
+  );
 
   const plagiarismEntitlement = canUseFeature(user.subscription, "plagiarismCheck");
   const plagiarism = plagiarismEntitlement.allowed

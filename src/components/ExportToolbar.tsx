@@ -7,6 +7,7 @@ const FORMATS = [
   { key: "docx", label: "Word" },
   { key: "pdf", label: "PDF" },
   { key: "txt", label: "TXT" },
+  { key: "html", label: "HTML" },
 ] as const;
 
 export function ExportToolbar({

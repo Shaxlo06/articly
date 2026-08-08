@@ -19,7 +19,7 @@ export const PLAN_LIMITS = {
     translate: { languagePairs: "multiple" as const, runsPerMonth: 30 },
     journalRecommendation: { maxResults: "all" as const, advancedFilters: false },
     plagiarismCheck: true,
-    exportFormats: ["docx", "pdf", "txt"] as const,
+    exportFormats: ["docx", "pdf", "txt", "html"] as const,
     versionHistory: { maxVersions: 10 },
   },
   MAX: {
@@ -28,7 +28,7 @@ export const PLAN_LIMITS = {
     translate: { languagePairs: "all" as const, priority: true, runsPerMonth: "unlimited" as const },
     journalRecommendation: { maxResults: "all" as const, advancedFilters: true },
     plagiarismCheck: true,
-    exportFormats: ["docx", "pdf", "txt"] as const,
+    exportFormats: ["docx", "pdf", "txt", "html"] as const,
     versionHistory: { maxVersions: "unlimited" as const },
   },
 } satisfies Record<PlanTier, Record<string, unknown>>;
@@ -81,7 +81,7 @@ export function canUseFeature(
   return { allowed: true, limit };
 }
 
-export function canExportFormat(subscription: Pick<Subscription, "plan">, format: "docx" | "pdf" | "txt") {
+export function canExportFormat(subscription: Pick<Subscription, "plan">, format: "docx" | "pdf" | "txt" | "html") {
   const formats = PLAN_LIMITS[subscription.plan].exportFormats as readonly string[];
   return formats.includes(format);
 }

@@ -67,6 +67,7 @@ enum ExportFormat {
   DOCX
   PDF
   TXT
+  HTML
 }
 
 model User {
@@ -109,6 +110,9 @@ model Article {
   status           ArticleStatus @default(DRAFT)
   language         String        @default("en")
   currentVersionId String?
+  authors          String?
+  affiliation      String?
+  keywords         String?
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
