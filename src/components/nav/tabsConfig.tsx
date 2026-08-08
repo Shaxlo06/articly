@@ -36,19 +36,14 @@ function JournalIcon() {
   );
 }
 
-function GraduationCapIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M2 9.5 12 5l10 4.5-10 4.5-10-4.5Z" />
-      <path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5" />
-    </svg>
-  );
-}
-
 export const NAV_TABS = [
   { href: "/dashboard", key: "dashboard", Icon: HomeIcon, match: (p: string) => p === "/dashboard" },
   { href: "/editor/new", key: "editArticle", Icon: PencilIcon, match: (p: string) => p.startsWith("/editor") },
   { href: "/translate/new", key: "translate", Icon: TranslateIcon, match: (p: string) => p.startsWith("/translate") },
-  { href: "/journals/new", key: "journals", Icon: JournalIcon, match: (p: string) => p.startsWith("/journals") },
-  { href: "/indexing/new", key: "indexing", Icon: GraduationCapIcon, match: (p: string) => p.startsWith("/indexing") },
+  {
+    href: "/journals/new",
+    key: "journalsIndexing",
+    Icon: JournalIcon,
+    match: (p: string) => p.startsWith("/journals") || p.startsWith("/indexing"),
+  },
 ] as const;
