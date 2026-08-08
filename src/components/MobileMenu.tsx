@@ -25,15 +25,6 @@ function CloseIcon() {
   );
 }
 
-function SearchIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="11" cy="11" r="7" />
-      <path d="m21 21-4.3-4.3" />
-    </svg>
-  );
-}
-
 function Panel({ name, plan, onClose }: { name: string; plan?: PlanTier; onClose: () => void }) {
   const t = useTranslations("nav");
   const pathname = usePathname();
@@ -77,7 +68,8 @@ function Panel({ name, plan, onClose }: { name: string; plan?: PlanTier; onClose
           entered ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex items-center gap-2 px-4 h-16 border-b border-border">
+        <div className="flex items-center justify-between gap-2 px-4 h-16 border-b border-border">
+          <p className="font-serif font-semibold">Menyu</p>
           <button
             type="button"
             onClick={onClose}
@@ -86,14 +78,6 @@ function Panel({ name, plan, onClose }: { name: string; plan?: PlanTier; onClose
           >
             <CloseIcon />
           </button>
-          <div className="flex-1 flex items-center gap-2 rounded-full border border-border-strong bg-background px-4 h-10 text-sm text-muted">
-            <SearchIcon />
-            <input
-              type="text"
-              placeholder="Qidiruv: maqola, jurnal, muallif..."
-              className="flex-1 min-w-0 bg-transparent outline-none placeholder:text-muted"
-            />
-          </div>
         </div>
 
         <div className="flex flex-col gap-3 px-4 py-4 border-b border-border">

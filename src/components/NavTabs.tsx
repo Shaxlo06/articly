@@ -16,8 +16,8 @@ export function NavTabs() {
   }, [pathname]);
 
   return (
-    <nav className="hidden sm:block overflow-x-auto">
-      <div className="flex items-center gap-1 px-6 min-w-max">
+    <nav className="hidden sm:flex flex-1 min-w-0 overflow-x-auto">
+      <div className="flex items-center gap-1 min-w-max">
         {NAV_TABS.map((tab, index) => {
           const active = tab.match(pathname);
           return (
@@ -27,7 +27,7 @@ export function NavTabs() {
                 itemRefs.current[index] = el;
               }}
               href={tab.href}
-              className={`flex items-center gap-1.5 whitespace-nowrap px-3 py-3 text-sm font-medium border-b-2 transition-colors ${
+              className={`flex items-center gap-1.5 whitespace-nowrap px-3 h-16 text-sm font-medium border-b-2 transition-colors ${
                 active ? "border-accent-strong text-accent-strong" : "border-transparent text-muted hover:text-foreground"
               }`}
             >

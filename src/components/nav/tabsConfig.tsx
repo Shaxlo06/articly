@@ -36,15 +36,6 @@ function JournalIcon() {
   );
 }
 
-function SparkleIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 3v4M12 17v4M3 12h4M17 12h4" />
-      <path d="M12 8a4 4 0 0 0 4 4 4 4 0 0 0-4 4 4 4 0 0 0-4-4 4 4 0 0 0 4-4Z" />
-    </svg>
-  );
-}
-
 function GraduationCapIcon() {
   return (
     <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -54,30 +45,10 @@ function GraduationCapIcon() {
   );
 }
 
-function ClockIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="8.5" />
-      <path d="M12 7.5V12l3 2" />
-    </svg>
-  );
-}
-
-function StarIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 3.5 14.7 9l6 .9-4.4 4.2 1 6-5.3-2.8-5.3 2.8 1-6-4.4-4.2 6-.9 2.7-5.5Z" />
-    </svg>
-  );
-}
-
 export const NAV_TABS = [
   { href: "/dashboard", key: "dashboard", Icon: HomeIcon, match: (p: string) => p === "/dashboard" },
   { href: "/editor/new", key: "editArticle", Icon: PencilIcon, match: (p: string) => p.startsWith("/editor") },
   { href: "/translate/new", key: "translate", Icon: TranslateIcon, match: (p: string) => p.startsWith("/translate") },
   { href: "/journals/new", key: "journals", Icon: JournalIcon, match: (p: string) => p.startsWith("/journals") },
-  { href: "/humanize/new", key: "humanize", Icon: SparkleIcon, match: (p: string) => p.startsWith("/humanize") },
   { href: "/indexing/new", key: "indexing", Icon: GraduationCapIcon, match: (p: string) => p.startsWith("/indexing") },
-  { href: "/history", key: "history", Icon: ClockIcon, match: (p: string) => p.startsWith("/history") },
-  { href: "/favorites", key: "favorites", Icon: StarIcon, match: (p: string) => p.startsWith("/favorites") },
 ] as const;
