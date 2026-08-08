@@ -17,6 +17,13 @@ function splitLocale(pathname: string) {
   return { locale: match[1], rest: pathname.slice(match[0].length) || "/" };
 }
 
+// The default locale (English) is unprefixed under "as-needed" routing —
+// building `/${locale}${path}` unconditionally would send it through an
+// extra redirect hop when next-intl's own middleware strips that prefix back off.
+function localizedPath(locale: string, path: string) {
+  return locale === routing.defaultLocale ? path : `/${locale}${path}`;
+}
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   // Route handlers live outside the [locale] segment and must never be
@@ -59,11 +66,11 @@ export async function proxy(request: NextRequest) {
   const isPublic = PUBLIC_PATHS.has(rest);
 
   if (!user && !isPublic) {
-    return NextResponse.redirect(new URL(`/${locale}/login`, request.url));
+    return NextResponse.redirect(new URL(localizedPath(locale, "/login"), request.url));
   }
 
   if (user && (rest === "/login" || rest === "/signup")) {
-    return NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url));
+    return NextResponse.redirect(new URL(localizedPath(locale, "/dashboard"), request.url));
   }
 
   return response;

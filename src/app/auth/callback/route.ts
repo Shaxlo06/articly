@@ -4,11 +4,18 @@ import { routing } from "@/i18n/routing";
 
 // The proxy sets this cookie to remember the locale the user was browsing in,
 // so the post-OAuth redirect can land back in the same language.
-function resolveLocale(request: NextRequest) {
+function resolveLocale(request: NextRequest): string {
   const cookieLocale = request.cookies.get("NEXT_LOCALE")?.value;
-  return routing.locales.includes(cookieLocale as (typeof routing.locales)[number])
+  return cookieLocale && routing.locales.includes(cookieLocale as (typeof routing.locales)[number])
     ? cookieLocale
     : routing.defaultLocale;
+}
+
+// The default locale (English) is unprefixed under "as-needed" routing —
+// building `/${locale}${path}` unconditionally would send it through an
+// extra redirect hop when next-intl's own middleware strips that prefix back off.
+function localizedPath(locale: string, path: string) {
+  return locale === routing.defaultLocale ? path : `/${locale}${path}`;
 }
 
 // Supabase redirects here after an OAuth provider (e.g. Google) approves the
@@ -22,9 +29,9 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      return NextResponse.redirect(`${origin}/${locale}/dashboard`);
+      return NextResponse.redirect(`${origin}${localizedPath(locale, "/dashboard")}`);
     }
   }
 
-  return NextResponse.redirect(`${origin}/${locale}/login?error=oauth`);
+  return NextResponse.redirect(`${origin}${localizedPath(locale, "/login?error=oauth")}`);
 }
