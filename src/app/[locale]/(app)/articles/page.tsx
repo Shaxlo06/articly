@@ -1,7 +1,7 @@
 import { Link } from "@/i18n/navigation";
 import { getCurrentUser } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
-import { articleStatusBadge, formatThousands, formatUzbekDate } from "@/lib/dashboardStats";
+import { articleStatusBadge, formatThousands, formatUzbekDate, sectionWordCount } from "@/lib/dashboardStats";
 
 export default async function ArticlesPage() {
   const user = await getCurrentUser();
@@ -24,7 +24,7 @@ export default async function ArticlesPage() {
       ) : (
         <ul className="divide-y divide-border rounded-lg border border-border bg-surface">
           {articles.map((a) => {
-            const wordCount = a.sections.reduce((sum, s) => sum + (s.content.trim() ? s.content.trim().split(/\s+/).length : 0), 0);
+            const wordCount = sectionWordCount(a.sections);
             const badge = articleStatusBadge(a.status);
             return (
               <li key={a.id}>

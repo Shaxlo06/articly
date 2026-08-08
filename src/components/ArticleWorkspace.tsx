@@ -6,6 +6,7 @@ import type { Article, ArticleSection } from "@prisma/client";
 import { Stepper } from "./Stepper";
 import { LanguageSelector } from "./LanguageSelector";
 import { SectionEditor } from "./SectionEditor";
+import { ArticleSettingsPanel } from "./ArticleSettingsPanel";
 import { RecommendationList, type Issue } from "./RecommendationList";
 import { VersionHistoryPanel } from "./VersionHistoryPanel";
 import { ExportToolbar } from "./ExportToolbar";
@@ -106,6 +107,14 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
     setSections((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
   }
 
+  function addSection(section: ArticleSection) {
+    setSections((prev) => [...prev, section]);
+  }
+
+  function removeSection(sectionId: string) {
+    setSections((prev) => prev.filter((s) => s.id !== sectionId));
+  }
+
   return (
     <div className="flex flex-col gap-8">
       <div>
@@ -120,10 +129,12 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
             <span className="font-semibold">Research topic / working title</span>
             <input
               value={topic}
-              onChange={(e) => setTopic(e.target.value)}
+              onChange={(e) => setTopic(e.target.value.slice(0, 200))}
+              maxLength={200}
               className="rounded-md border border-border-strong p-3 focus:border-accent-strong focus:outline-none"
               placeholder="e.g. Urban green space and cognitive restoration"
             />
+            <span className="self-end text-xs text-muted">{topic.length}/200</span>
           </label>
           <label className="flex flex-col gap-1.5 text-sm">
             <span className="font-semibold">Field / specialization</span>
@@ -155,10 +166,12 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
             <span className="font-semibold">Keywords</span>
             <input
               value={keywords}
-              onChange={(e) => setKeywords(e.target.value)}
+              onChange={(e) => setKeywords(e.target.value.slice(0, 200))}
+              maxLength={200}
               placeholder="comma-separated, e.g. urban ecology, cognition, restoration"
               className="rounded-md border border-border-strong p-3 focus:border-accent-strong focus:outline-none"
             />
+            <span className="self-end text-xs text-muted">{keywords.length}/200</span>
           </label>
           <StepActions onNext={next} nextLabel="Continue" busy={busy} />
         </div>
@@ -206,33 +219,51 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
       )}
 
       {(step === "draft" || step === "edit") && (
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center justify-between max-w-2xl">
-            <p className="text-sm text-muted">
-              {step === "draft"
-                ? "Generate a first pass for each section, then move on to polish the prose."
-                : "Refine the wording directly, or ask the engine to expand or tighten a section."}
-            </p>
-            <button
-              onClick={() => setShowPreview((v) => !v)}
-              className="shrink-0 rounded-md border border-border-strong px-3 py-1.5 text-xs font-semibold hover:border-accent-strong"
-            >
-              {showPreview ? "Hide A4 preview" : "Show A4 preview"}
-            </button>
+        <div className="flex flex-col lg:flex-row gap-5 items-start">
+          <div className="w-full lg:w-72 shrink-0">
+            <ArticleSettingsPanel
+              articleId={article.id}
+              initial={{
+                wordLimit: article.wordLimit,
+                academicLevel: article.academicLevel,
+                method: article.method,
+                articleType: article.articleType,
+                includeReferences: article.includeReferences,
+              }}
+              sections={sections}
+              onSectionAdded={addSection}
+              onSectionRemoved={removeSection}
+            />
           </div>
-          <div className={showPreview ? "grid gap-4 lg:grid-cols-2 items-start" : ""}>
-            <div className="flex flex-col gap-4">
-              {sections.map((s) => (
-                <SectionEditor key={s.id} articleId={article.id} section={s} onChange={updateSection} />
-              ))}
+
+          <div className="flex-1 min-w-0 flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <p className="text-sm text-muted">
+                {step === "draft"
+                  ? "Generate a first pass for each section, then move on to polish the prose."
+                  : "Refine the wording directly, or ask the engine to expand or tighten a section."}
+              </p>
+              <button
+                onClick={() => setShowPreview((v) => !v)}
+                className="shrink-0 rounded-md border border-border-strong px-3 py-1.5 text-xs font-semibold hover:border-accent-strong"
+              >
+                {showPreview ? "Hide A4 preview" : "Show A4 preview"}
+              </button>
             </div>
-            {showPreview && (
-              <div className="lg:sticky lg:top-4">
-                <DocumentPreview title={topic} authors={authors} affiliation={affiliation} keywords={keywords} sections={sections} />
+            <div className={showPreview ? "grid gap-4 xl:grid-cols-2 items-start" : ""}>
+              <div className="flex flex-col gap-4">
+                {sections.map((s) => (
+                  <SectionEditor key={s.id} articleId={article.id} section={s} onChange={updateSection} />
+                ))}
               </div>
-            )}
+              {showPreview && (
+                <div className="xl:sticky xl:top-4">
+                  <DocumentPreview title={topic} authors={authors} affiliation={affiliation} keywords={keywords} sections={sections} />
+                </div>
+              )}
+            </div>
+            <StepActions onBack={back} onNext={next} nextLabel="Continue" busy={busy} />
           </div>
-          <StepActions onBack={back} onNext={next} nextLabel="Continue" busy={busy} />
         </div>
       )}
 

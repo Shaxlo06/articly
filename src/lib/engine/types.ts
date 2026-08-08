@@ -56,4 +56,8 @@ export interface GenerateSectionInput {
   language: string;
   mode: SectionMode;
   existingContent?: string;
+  wordLimit?: number;
+  academicLevel?: string;
+  method?: string;
+  articleType?: string;
 }

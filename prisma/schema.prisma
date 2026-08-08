@@ -101,20 +101,25 @@ model Subscription {
 }
 
 model Article {
-  id               String        @id @default(cuid())
-  owner            User          @relation(fields: [ownerId], references: [id])
-  ownerId          String
-  title            String
-  field            String
-  source           ArticleSource @default(SCRATCH)
-  status           ArticleStatus @default(DRAFT)
-  language         String        @default("en")
-  currentVersionId String?
-  authors          String?
-  affiliation      String?
-  keywords         String?
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
+  id                String        @id @default(cuid())
+  owner             User          @relation(fields: [ownerId], references: [id])
+  ownerId           String
+  title             String
+  field             String
+  source            ArticleSource @default(SCRATCH)
+  status            ArticleStatus @default(DRAFT)
+  language          String        @default("en")
+  currentVersionId  String?
+  authors           String?
+  affiliation       String?
+  keywords          String?
+  wordLimit         Int?
+  academicLevel     String?
+  method            String?
+  articleType       String?
+  includeReferences Boolean       @default(true)
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
 
   sections       ArticleSection[]
   versions       ArticleVersion[]

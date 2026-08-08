@@ -14,7 +14,7 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
     return NextResponse.json({ sections: article.sections.sort((a, b) => a.order - b.order) });
   }
 
-  const skeleton = await generateStructure(article.title, article.field);
+  const skeleton = await generateStructure(article.title, article.field, article.articleType ?? undefined, article.includeReferences);
   await prisma.articleSection.createMany({
     data: skeleton.map((s) => ({ articleId: id, key: s.key, title: s.title, order: s.order, content: "" })),
   });

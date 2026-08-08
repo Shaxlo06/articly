@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ArticleSection } from "@prisma/client";
+import { RichTextEditor } from "./RichTextEditor";
+import { plainTextToHtml } from "@/lib/format/htmlDocument";
 
 const ACTIONS: { mode: "draft" | "regenerate" | "expand" | "shorten"; label: string }[] = [
   { mode: "draft", label: "Draft with AI" },
@@ -9,6 +11,13 @@ const ACTIONS: { mode: "draft" | "regenerate" | "expand" | "shorten"; label: str
   { mode: "expand", label: "Expand" },
   { mode: "shorten", label: "Shorten" },
 ];
+
+const AUTOSAVE_DELAY_MS = 4000;
+
+/** Content saved before the rich-text editor existed is plain text, not HTML. */
+function isLegacyPlainText(content: string): boolean {
+  return content.length > 0 && !content.includes("<");
+}
 
 export function SectionEditor({
   articleId,
@@ -19,9 +28,25 @@ export function SectionEditor({
   section: ArticleSection;
   onChange: (section: ArticleSection) => void;
 }) {
-  const [content, setContent] = useState(section.content);
+  const [initialContent] = useState(() =>
+    isLegacyPlainText(section.content) ? plainTextToHtml(section.content) : section.content
+  );
+  const [displayContent, setDisplayContent] = useState(initialContent);
+  // Bumped only when AI generation replaces the whole document, forcing
+  // RichTextEditor to remount with the new seed content — plain typing must
+  // NOT bump this, or the editor would lose focus/cursor on every keystroke.
+  const [contentVersion, setContentVersion] = useState(0);
   const [pendingMode, setPendingMode] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
+
+  const latestContent = useRef(initialContent);
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+    };
+  }, []);
 
   async function save(nextContent: string) {
     setSaveState("saving");
@@ -35,6 +60,21 @@ export function SectionEditor({
     onChange(data.section);
   }
 
+  function handleUpdate(html: string) {
+    latestContent.current = html;
+    setDisplayContent(html);
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => save(latestContent.current), AUTOSAVE_DELAY_MS);
+  }
+
+  function handleBlur() {
+    if (saveTimer.current) {
+      clearTimeout(saveTimer.current);
+      saveTimer.current = null;
+    }
+    save(latestContent.current);
+  }
+
   async function runAction(mode: (typeof ACTIONS)[number]["mode"]) {
     setPendingMode(mode);
     try {
@@ -45,7 +85,9 @@ export function SectionEditor({
       });
       const data = await res.json();
       if (res.ok) {
-        setContent(data.section.content);
+        latestContent.current = data.section.content;
+        setDisplayContent(data.section.content);
+        setContentVersion((v) => v + 1);
         onChange(data.section);
       }
     } finally {
@@ -53,24 +95,23 @@ export function SectionEditor({
     }
   }
 
-  const isEmpty = content.trim().length === 0;
+  const isEmpty = displayContent.replace(/<[^>]*>/g, "").trim().length === 0;
 
   return (
     <div className="rounded-lg border border-border bg-surface p-5">
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-serif text-lg font-semibold">{section.title}</h3>
         <span className="text-xs text-muted">
-          {saveState === "saving" ? "Saving…" : saveState === "saved" ? "Saved" : ""}
+          {saveState === "saving" ? "Saqlanmoqda…" : saveState === "saved" ? "Saqlangan" : ""}
         </span>
       </div>
 
-      <textarea
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        onBlur={() => save(content)}
-        rows={8}
+      <RichTextEditor
+        key={contentVersion}
+        content={displayContent}
+        onUpdate={handleUpdate}
+        onBlur={handleBlur}
         placeholder={`Write or generate the ${section.title.toLowerCase()} section…`}
-        className="w-full rounded-md border border-border-strong p-3 text-sm focus:border-accent-strong focus:outline-none"
       />
 
       <div className="flex flex-wrap gap-2 mt-3">

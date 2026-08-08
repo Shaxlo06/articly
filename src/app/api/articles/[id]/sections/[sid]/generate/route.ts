@@ -38,6 +38,10 @@ export async function POST(
       language: article.language,
       mode,
       existingContent: section.content || undefined,
+      wordLimit: article.wordLimit ?? undefined,
+      academicLevel: article.academicLevel ?? undefined,
+      method: article.method ?? undefined,
+      articleType: article.articleType ?? undefined,
     });
 
     const updated = await prisma.articleSection.update({ where: { id: sid }, data: { content } });

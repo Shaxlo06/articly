@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/session";
 import { canUseFeature } from "@/lib/entitlements";
 import { prisma } from "@/lib/prisma";
 import { segmentStructure } from "@/lib/engine";
+import { plainTextToHtml } from "@/lib/format/htmlDocument";
 
 export async function POST(request: NextRequest) {
   const user = await getCurrentUser();
@@ -36,9 +37,18 @@ export async function POST(request: NextRequest) {
   });
 
   if ((source === "UPLOADED" || source === "PARTIAL") && existingText?.trim()) {
+    // segmentStructure returns the user's pasted text verbatim (plain text,
+    // not HTML) — wrap it the same way AI-generated content is wrapped, since
+    // ArticleSection.content is trusted as HTML everywhere downstream now.
     const segments = await segmentStructure(existingText);
     await prisma.articleSection.createMany({
-      data: segments.map((s) => ({ articleId: article.id, key: s.key, title: s.title, order: s.order, content: s.content })),
+      data: segments.map((s) => ({
+        articleId: article.id,
+        key: s.key,
+        title: s.title,
+        order: s.order,
+        content: plainTextToHtml(s.content),
+      })),
     });
   }
 

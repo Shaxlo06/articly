@@ -1,4 +1,5 @@
 import { completeText, hasAnthropicKey } from "@/lib/anthropic";
+import { plainTextToHtml, stripHtmlToText } from "@/lib/format/htmlDocument";
 import type { GenerateSectionInput } from "./types";
 
 function mockSection({ sectionTitle, topic, field }: GenerateSectionInput): string {
@@ -12,14 +13,25 @@ const MODE_INSTRUCTION: Record<GenerateSectionInput["mode"], string> = {
   shorten: "Tighten the existing section, cutting redundancy while preserving every claim and citation.",
 };
 
+/** section.content (and thus existingContent) is HTML — the model should only ever see/produce plain prose. */
 export async function generateSection(input: GenerateSectionInput): Promise<string> {
-  if (!hasAnthropicKey()) return mockSection(input);
+  if (!hasAnthropicKey()) return plainTextToHtml(mockSection(input));
 
-  const { sectionKey, sectionTitle, topic, field, language, mode, existingContent } = input;
-  const existingBlock = existingContent ? `\n\nEXISTING CONTENT:\n${existingContent}` : "";
+  const { sectionKey, sectionTitle, topic, field, language, mode, existingContent, wordLimit, academicLevel, method, articleType } = input;
+  const existingBlock = existingContent ? `\n\nEXISTING CONTENT:\n${stripHtmlToText(existingContent)}` : "";
+  const constraints = [
+    wordLimit ? `Target roughly ${wordLimit} words across the whole article, so scale this section's length accordingly.` : null,
+    academicLevel ? `Write at a ${academicLevel} academic level.` : null,
+    method ? `Research method/approach: ${method}.` : null,
+    articleType ? `Document type: ${articleType}.` : null,
+  ]
+    .filter(Boolean)
+    .join("\n");
 
-  return completeText(
-    `${MODE_INSTRUCTION[mode]}\n\nSection: ${sectionTitle} (IMRAD key: ${sectionKey})\nResearch topic: ${topic}\nField: ${field}\nWrite in: ${language}${existingBlock}\n\nWrite in formal academic register appropriate for a peer-reviewed journal submission. Output only the section prose, no heading, no meta-commentary.`,
+  const text = await completeText(
+    `${MODE_INSTRUCTION[mode]}\n\nSection: ${sectionTitle} (IMRAD key: ${sectionKey})\nResearch topic: ${topic}\nField: ${field}\nWrite in: ${language}${constraints ? `\n${constraints}` : ""}${existingBlock}\n\nWrite in formal academic register appropriate for a peer-reviewed journal submission. Output only the section prose, no heading, no meta-commentary.`,
     "You are an academic drafting engine that writes IMRAD-structured research article sections."
   );
+
+  return plainTextToHtml(text);
 }

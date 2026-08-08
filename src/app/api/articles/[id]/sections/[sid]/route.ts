@@ -23,3 +23,19 @@ export async function PATCH(
 
   return NextResponse.json({ section });
 }
+
+export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string; sid: string }> }) {
+  const { id, sid } = await params;
+  const user = await getCurrentUser();
+
+  const article = await prisma.article.findUnique({ where: { id } });
+  if (!article || article.ownerId !== user.id) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  const section = await prisma.articleSection.findUnique({ where: { id: sid } });
+  if (!section || section.articleId !== id) return NextResponse.json({ error: "Section not found" }, { status: 404 });
+
+  await prisma.articleSection.delete({ where: { id: sid } });
+  await prisma.article.update({ where: { id }, data: { updatedAt: new Date() } });
+
+  return NextResponse.json({ ok: true });
+}

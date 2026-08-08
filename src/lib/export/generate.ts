@@ -12,7 +12,7 @@ import {
 } from "docx";
 import { PDFDocument, PDFPage, StandardFonts, rgb } from "pdf-lib";
 import { FONT_SIZE_PT, LINE_SPACING, MARGIN_MM, MARGIN_PT, PAGE_PT } from "@/lib/format/config";
-import { buildHtmlDocument } from "@/lib/format/htmlDocument";
+import { buildHtmlDocument, stripHtmlToText } from "@/lib/format/htmlDocument";
 
 export interface ExportSection {
   title: string;
@@ -42,7 +42,18 @@ function stripReferenceNumbering(entry: string): string {
 const DOCX_LINE = Math.round(240 * LINE_SPACING);
 const DOCX_BODY_SIZE = FONT_SIZE_PT.body * 2; // half-points
 
-export async function toDocxBuffer(payload: ExportPayload): Promise<Buffer> {
+/**
+ * section.content is HTML (TipTap output). DOCX/PDF/TXT only render plain
+ * paragraphs here, so rich formatting (bold/lists/tables) doesn't survive
+ * these three exports — only the HTML export and live preview keep it,
+ * since buildHtmlDocument renders HTML natively.
+ */
+function flattenSections(sections: ExportSection[]): ExportSection[] {
+  return sections.map((s) => ({ ...s, content: stripHtmlToText(s.content) }));
+}
+
+export async function toDocxBuffer(rawPayload: ExportPayload): Promise<Buffer> {
+  const payload: ExportPayload = { ...rawPayload, sections: flattenSections(rawPayload.sections) };
   const metaParagraphs = [payload.authors, payload.affiliation]
     .filter((v): v is string => Boolean(v))
     .map(
@@ -148,7 +159,8 @@ export async function toDocxBuffer(payload: ExportPayload): Promise<Buffer> {
   return Packer.toBuffer(doc);
 }
 
-export async function toPdfBuffer(payload: ExportPayload): Promise<Buffer> {
+export async function toPdfBuffer(rawPayload: ExportPayload): Promise<Buffer> {
+  const payload: ExportPayload = { ...rawPayload, sections: flattenSections(rawPayload.sections) };
   const pdf = await PDFDocument.create();
   const font = await pdf.embedFont(StandardFonts.TimesRoman);
   const bold = await pdf.embedFont(StandardFonts.TimesRomanBold);
@@ -261,7 +273,8 @@ export async function toPdfBuffer(payload: ExportPayload): Promise<Buffer> {
   return Buffer.from(bytes);
 }
 
-export function toTxtBuffer(payload: ExportPayload): Buffer {
+export function toTxtBuffer(rawPayload: ExportPayload): Buffer {
+  const payload: ExportPayload = { ...rawPayload, sections: flattenSections(rawPayload.sections) };
   const lines = [
     payload.title,
     ...[payload.authors, payload.affiliation].filter((v): v is string => Boolean(v)),

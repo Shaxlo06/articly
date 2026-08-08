@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/session";
 import { canUseFeature } from "@/lib/entitlements";
 import { prisma } from "@/lib/prisma";
 import { analyzeQuality } from "@/lib/engine";
+import { stripHtmlToText } from "@/lib/format/htmlDocument";
 
 export async function POST(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -13,7 +14,7 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
   if (!article || article.ownerId !== user.id) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   const sortedSections = article.sections.sort((a, b) => a.order - b.order);
-  const fullText = sortedSections.map((s) => s.content).join("\n\n");
+  const fullText = sortedSections.map((s) => stripHtmlToText(s.content)).join("\n\n");
 
   const job = await prisma.engineJob.create({
     data: { userId: user.id, articleId: id, type: "ANALYZE_QUALITY", status: "PROCESSING", input: JSON.stringify({}) },

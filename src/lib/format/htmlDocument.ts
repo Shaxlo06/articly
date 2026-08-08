@@ -36,16 +36,40 @@ function isReferencesSection(section: HtmlDocumentSection): boolean {
   return /references|bibliography/i.test(section.title);
 }
 
-function paragraphsHtml(content: string): string {
-  return content
-    .split(/\n+/)
-    .filter((p) => p.trim().length > 0)
-    .map((p) => `<p>${escapeHtml(p)}</p>`)
+/**
+ * ArticleSection.content is HTML (TipTap's own schema output, or AI text
+ * already wrapped by plainTextToHtml below) — never raw third-party input —
+ * so it's safe to flatten/re-embed without an extra escaping pass.
+ */
+export function stripHtmlToText(html: string): string {
+  return html
+    .replace(/<\/(p|li|div|h[1-6]|blockquote|tr)>/gi, "\n")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
     .join("\n");
 }
 
+/** Wraps AI-generated plain prose into safe HTML paragraphs before it's stored as ArticleSection.content. */
+export function plainTextToHtml(text: string): string {
+  return text
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => `<p>${escapeHtml(line)}</p>`)
+    .join("");
+}
+
 function referenceListHtml(content: string): string {
-  const entries = content.split(/\n+/).filter((p) => p.trim().length > 0);
+  const entries = stripHtmlToText(content).split("\n").filter(Boolean);
   return `<ol class="references">\n${entries
     .map((entry) => `<li>${escapeHtml(entry.replace(/^\s*(\[\d+\]|\d+[.)])\s*/, ""))}</li>`)
     .join("\n")}\n</ol>`;
@@ -69,7 +93,7 @@ export function buildHtmlDocument(payload: HtmlDocumentPayload): string {
       (section) => `
       <section>
         <h2>${escapeHtml(section.title)}</h2>
-        ${isReferencesSection(section) ? referenceListHtml(section.content) : paragraphsHtml(section.content)}
+        ${isReferencesSection(section) ? referenceListHtml(section.content) : section.content}
       </section>`
     )
     .join("\n");
@@ -101,7 +125,13 @@ export function buildHtmlDocument(payload: HtmlDocumentPayload): string {
   .meta { font-size: ${FONT_SIZE_PT.author}pt; text-align: center; margin: 0.2em 0; }
   .keywords { font-size: ${FONT_SIZE_PT.body}pt; margin: 1em 0; }
   h2 { font-size: ${FONT_SIZE_PT.heading1}pt; margin: 1.4em 0 0.5em; }
-  p { margin: 0 0 0.75em; text-align: justify; }
+  h3 { font-size: ${FONT_SIZE_PT.heading2}pt; margin: 1.2em 0 0.4em; }
+  section p { margin: 0 0 0.75em; text-align: justify; }
+  section ul, section ol { margin: 0 0 0.75em; padding-left: 1.5em; }
+  section blockquote { margin: 0 0 0.75em; padding-left: 1em; border-left: 3px solid #ccc; color: #444; }
+  section table { border-collapse: collapse; width: 100%; margin: 0 0 0.75em; }
+  section th, section td { border: 1px solid #999; padding: 0.3em 0.5em; text-align: left; }
+  section img { max-width: 100%; }
   .references { padding-left: 1.5em; }
   .references li { padding-left: 1.5em; text-indent: -1.5em; margin-bottom: 0.5em; }
   .watermark { font-size: ${FONT_SIZE_PT.caption}pt; font-style: italic; text-align: center; color: #666; margin-top: 0.5em; }

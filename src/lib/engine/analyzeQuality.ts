@@ -1,5 +1,6 @@
 import { completeJson, hasAnthropicKey } from "@/lib/anthropic";
 import { ABSTRACT_WORD_RANGE, REQUIRED_SECTIONS } from "@/lib/format/config";
+import { stripHtmlToText } from "@/lib/format/htmlDocument";
 import type { QualityIssue, QualityResult } from "./types";
 
 export interface QualitySection {
@@ -27,7 +28,10 @@ const CITATION_PATTERN = /\(([A-Z][a-zA-Z'-]+)(?:\s(?:et al\.|&|and)\s[A-Z][a-zA
  * pass is available — the LLM's free-form "formatting" review is useful but
  * not guaranteed to catch these, and these are cheap to check exactly.
  */
-export function runFormatChecks(sections: QualitySection[]): QualityIssue[] {
+export function runFormatChecks(rawSections: QualitySection[]): QualityIssue[] {
+  // section.content is HTML (TipTap output) — flatten to plain text before
+  // running word counts / citation regex against it.
+  const sections = rawSections.map((s) => ({ ...s, content: stripHtmlToText(s.content) }));
   const issues: QualityIssue[] = [];
 
   const abstract = sections.find(isAbstractSection);

@@ -1,5 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import type { ArticleStatus, EngineJobStatus } from "@prisma/client";
+import { stripHtmlToText } from "@/lib/format/htmlDocument";
+
+export function sectionWordCount(sections: { content: string }[]): number {
+  return sections.reduce((sum, s) => {
+    const text = stripHtmlToText(s.content).trim();
+    return sum + (text ? text.split(/\s+/).length : 0);
+  }, 0);
+}
 
 function startOfMonth(): Date {
   const now = new Date();
@@ -80,7 +88,7 @@ export async function getRecentProjects(userId: string, limit = 5): Promise<Proj
     id: a.id,
     title: a.title,
     updatedAt: a.updatedAt,
-    wordCount: a.sections.reduce((sum, s) => sum + (s.content.trim() ? s.content.trim().split(/\s+/).length : 0), 0),
+    wordCount: sectionWordCount(a.sections),
     status: a.status,
     href: `/editor/${a.id}`,
   }));
