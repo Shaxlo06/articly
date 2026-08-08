@@ -16,7 +16,7 @@ export function NavTabs() {
   }, [pathname]);
 
   return (
-    <nav className="hidden sm:flex flex-1 min-w-0 overflow-x-auto">
+    <nav className="hidden sm:flex flex-1 min-w-0 overflow-x-auto justify-center">
       <div className="flex items-center gap-1 min-w-max">
         {NAV_TABS.map((tab, index) => {
           const active = tab.match(pathname);
