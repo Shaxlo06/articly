@@ -28,17 +28,17 @@ export function HeroModuleCard({
   return (
     <Link
       href={href}
-      className={`group relative flex flex-col justify-between gap-6 rounded-2xl ${c.bg} p-6 min-h-[220px] shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all`}
+      className={`group relative flex flex-col justify-between gap-4 sm:gap-6 rounded-2xl ${c.bg} p-5 sm:p-6 min-h-[180px] sm:min-h-[220px] shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all`}
     >
-      <div className={`h-14 w-14 rounded-full ${c.iconBg} flex items-center justify-center ${c.strong}`}>{icon}</div>
+      <div className={`h-12 w-12 sm:h-14 sm:w-14 rounded-full ${c.iconBg} flex items-center justify-center ${c.strong}`}>{icon}</div>
 
       <div>
-        <h3 className="font-serif text-2xl font-bold uppercase tracking-wide">{title}</h3>
+        <h3 className="font-serif text-xl sm:text-2xl font-bold uppercase tracking-wide">{title}</h3>
         <p className="text-sm text-muted mt-1">{subtitle}</p>
       </div>
 
       <span
-        className={`absolute bottom-5 right-5 h-10 w-10 rounded-full bg-surface shadow flex items-center justify-center ${c.strong} transition-transform group-hover:translate-x-0.5`}
+        className={`absolute bottom-5 right-5 h-11 w-11 rounded-full bg-surface shadow flex items-center justify-center ${c.strong} transition-transform group-hover:translate-x-0.5`}
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
           <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />

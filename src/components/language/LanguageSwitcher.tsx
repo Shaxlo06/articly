@@ -104,7 +104,7 @@ export function LanguageSwitcher() {
         aria-expanded={open}
         aria-label={t("selectLanguage")}
         onClick={() => setOpen((v) => !v)}
-        className="h-8 min-w-8 px-1.5 rounded-full border border-border-strong flex items-center justify-center gap-1 text-xs font-semibold hover:border-accent-strong transition-colors"
+        className="h-11 min-w-11 px-2.5 rounded-full border border-border-strong flex items-center justify-center gap-1 text-xs font-semibold hover:border-accent-strong transition-colors"
       >
         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="12" cy="12" r="9" />

@@ -58,7 +58,7 @@ export function RecentProjects({ items }: { items: ProjectItem[] }) {
           <Link
             key={`${item.type}-${item.id}`}
             href={item.href}
-            className="shrink-0 w-64 flex flex-col gap-3 rounded-lg border border-border bg-surface p-4 shadow-sm hover:border-accent-strong hover:shadow-md transition-all"
+            className="shrink-0 w-[85vw] max-w-xs sm:w-64 sm:max-w-none flex flex-col gap-3 rounded-lg border border-border bg-surface p-4 shadow-sm hover:border-accent-strong hover:shadow-md transition-all"
           >
             <div className="h-9 w-9 rounded-md bg-tint flex items-center justify-center text-accent-strong">
               <DocIcon />

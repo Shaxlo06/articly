@@ -96,10 +96,10 @@ export function UserMenu({ name }: { name: string }) {
         aria-haspopup="menu"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className="h-9 flex items-center gap-2 rounded-full bg-accent text-ink-fixed pl-3 pr-2.5 hover:brightness-95 transition"
+        className="h-11 min-w-11 flex items-center gap-2 rounded-full bg-accent text-ink-fixed pl-3 pr-2.5 hover:brightness-95 transition"
       >
         <UserIcon />
-        <span className="text-sm font-semibold max-w-[10rem] truncate">{firstName || name}</span>
+        <span className="hidden lg:inline text-sm font-semibold max-w-[10rem] truncate">{firstName || name}</span>
         <ChevronIcon className={`transition-transform ${open ? "rotate-180" : ""}`} />
       </button>
 

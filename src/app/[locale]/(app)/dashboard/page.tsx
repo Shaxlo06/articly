@@ -79,7 +79,7 @@ export default async function DashboardPage() {
         <h1 className="font-serif text-3xl font-semibold mt-1">Xush kelibsiz{firstName ? `, ${firstName}` : ""}</h1>
       </div>
 
-      <div className="grid sm:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
         <HeroModuleCard
           href="/editor/new"
           colorway="accent"
@@ -113,7 +113,7 @@ export default async function DashboardPage() {
         <RecentProjects items={recentProjects} />
       </div>
 
-      <div className="grid sm:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
         <StatCard
           colorway="lavender"
           icon={<DocumentIcon />}

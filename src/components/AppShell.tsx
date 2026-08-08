@@ -6,6 +6,7 @@ import { ThemeToggle } from "./theme/ThemeToggle";
 import { LanguageSwitcher } from "./language/LanguageSwitcher";
 import { UserMenu } from "./UserMenu";
 import { NavTabs } from "./NavTabs";
+import { MobileMenu } from "./MobileMenu";
 import { SessionGuard } from "./SessionGuard";
 
 function SearchIcon() {
@@ -19,37 +20,40 @@ function SearchIcon() {
 
 export async function AppShell({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser();
+  const displayName = user.name || user.email.split("@")[0];
 
   return (
     <div className="min-h-screen flex flex-col">
       <SessionGuard />
       <header className="border-b border-border bg-surface">
-        <div className="mx-auto max-w-6xl px-6 h-16 flex items-center justify-between gap-6">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 h-16 flex items-center justify-between gap-3 sm:gap-6">
           <Link href="/dashboard" className="shrink-0">
             <Logo />
           </Link>
 
-          <div className="hidden md:flex flex-1 max-w-md items-center gap-2 rounded-full border border-border-strong bg-background px-4 h-9 text-sm text-muted">
+          <div className="hidden sm:flex items-center gap-2 rounded-full border border-border-strong bg-background px-4 h-9 text-sm text-muted sm:w-32 md:w-48 lg:flex-1 lg:w-auto lg:max-w-md">
             <SearchIcon />
             <input
               type="text"
               placeholder="Qidiruv: maqola, jurnal, muallif..."
-              className="flex-1 bg-transparent outline-none placeholder:text-muted"
+              className="flex-1 min-w-0 bg-transparent outline-none placeholder:text-muted"
             />
           </div>
 
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="hidden sm:flex items-center gap-2 lg:gap-3 shrink-0">
             {user.subscription && <PlanBadge plan={user.subscription.plan} />}
             <LanguageSwitcher />
             <ThemeToggle />
-            <UserMenu name={user.name || user.email.split("@")[0]} />
+            <UserMenu name={displayName} />
           </div>
+
+          <MobileMenu name={displayName} plan={user.subscription?.plan} />
         </div>
         <div className="border-t border-border">
           <NavTabs />
         </div>
       </header>
-      <main className="flex-1 mx-auto w-full max-w-6xl px-6 py-10">{children}</main>
+      <main className="flex-1 mx-auto w-full max-w-6xl px-4 sm:px-6 py-8 sm:py-10">{children}</main>
     </div>
   );
 }
