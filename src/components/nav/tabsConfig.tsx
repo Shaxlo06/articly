@@ -1,12 +1,3 @@
-function HomeIcon() {
-  return (
-    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 11.5 12 4l8 7.5" />
-      <path d="M6 10v9h12v-9" />
-    </svg>
-  );
-}
-
 function PencilIcon() {
   return (
     <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -37,7 +28,6 @@ function JournalIcon() {
 }
 
 export const NAV_TABS = [
-  { href: "/dashboard", key: "dashboard", Icon: HomeIcon, match: (p: string) => p === "/dashboard" },
   { href: "/editor/new", key: "editArticle", Icon: PencilIcon, match: (p: string) => p.startsWith("/editor") },
   { href: "/translate/new", key: "translate", Icon: TranslateIcon, match: (p: string) => p.startsWith("/translate") },
   {
