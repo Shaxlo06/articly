@@ -1,6 +1,5 @@
 import { Link } from "@/i18n/navigation";
 import { getCurrentUser } from "@/lib/session";
-import { PlanBadge } from "./PlanBadge";
 import { Logo } from "./Logo";
 import { ThemeToggle } from "./theme/ThemeToggle";
 import { LanguageSwitcher } from "./language/LanguageSwitcher";
@@ -26,13 +25,12 @@ export async function AppShell({ children }: { children: React.ReactNode }) {
           <NavTabs />
 
           <div className="hidden sm:flex items-center gap-2 lg:gap-3 shrink-0 ml-auto">
-            {user.subscription && <PlanBadge plan={user.subscription.plan} />}
             <LanguageSwitcher />
             <ThemeToggle />
             <UserMenu name={displayName} />
           </div>
 
-          <MobileMenu name={displayName} plan={user.subscription?.plan} />
+          <MobileMenu name={displayName} />
         </div>
       </StickyHeader>
       <main className="flex-1 mx-auto w-full max-w-6xl px-4 sm:px-6 py-8 sm:py-10">{children}</main>

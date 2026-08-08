@@ -3,9 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
-import type { PlanTier } from "@prisma/client";
 import { NAV_TABS } from "./nav/tabsConfig";
-import { PlanBadge } from "./PlanBadge";
 import { LanguageSwitcher } from "./language/LanguageSwitcher";
 import { ThemeToggle } from "./theme/ThemeToggle";
 
@@ -25,7 +23,7 @@ function CloseIcon() {
   );
 }
 
-function Panel({ name, plan, onClose }: { name: string; plan?: PlanTier; onClose: () => void }) {
+function Panel({ name, onClose }: { name: string; onClose: () => void }) {
   const t = useTranslations("nav");
   const pathname = usePathname();
   const [entered, setEntered] = useState(false);
@@ -83,7 +81,6 @@ function Panel({ name, plan, onClose }: { name: string; plan?: PlanTier; onClose
         <div className="flex flex-col gap-3 px-4 py-4 border-b border-border">
           <p className="font-semibold truncate">{name}</p>
           <div className="flex items-center gap-2 flex-wrap">
-            {plan && <PlanBadge plan={plan} />}
             <LanguageSwitcher />
             <ThemeToggle />
           </div>
@@ -112,7 +109,7 @@ function Panel({ name, plan, onClose }: { name: string; plan?: PlanTier; onClose
   );
 }
 
-export function MobileMenu({ name, plan }: { name: string; plan?: PlanTier }) {
+export function MobileMenu({ name }: { name: string }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -125,7 +122,7 @@ export function MobileMenu({ name, plan }: { name: string; plan?: PlanTier }) {
       >
         <MenuIcon />
       </button>
-      {open && <Panel name={name} plan={plan} onClose={() => setOpen(false)} />}
+      {open && <Panel name={name} onClose={() => setOpen(false)} />}
     </>
   );
 }
