@@ -1,7 +1,6 @@
 import { getCurrentUser } from "@/lib/session";
 import { PlanSwitcher } from "@/components/PlanSwitcher";
 import { ProfileForm } from "@/components/ProfileForm";
-import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export default async function AccountPage() {
   const user = await getCurrentUser();
@@ -23,17 +22,6 @@ export default async function AccountPage() {
           initialField={user.field}
           initialPreferredLanguage={user.preferredLanguage}
         />
-      </div>
-
-      <div>
-        <h2 className="font-serif text-lg font-semibold mb-4">Appearance</h2>
-        <div className="flex items-center gap-3 rounded-lg border border-border bg-surface p-4">
-          <ThemeToggle />
-          <div>
-            <p className="text-sm font-medium">Light / Dark mode</p>
-            <p className="text-xs text-muted">Switch how ArticlyApp looks on this device.</p>
-          </div>
-        </div>
       </div>
 
       <div>
