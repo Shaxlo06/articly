@@ -28,7 +28,7 @@ function JournalIcon() {
 }
 
 export const NAV_TABS = [
-  { href: "/editor/new", key: "editArticle", Icon: PencilIcon, match: (p: string) => p.startsWith("/editor") },
+  { href: "/editor", key: "editArticle", Icon: PencilIcon, match: (p: string) => p.startsWith("/editor") },
   { href: "/translate/new", key: "translate", Icon: TranslateIcon, match: (p: string) => p.startsWith("/translate") },
   {
     href: "/journals/new",

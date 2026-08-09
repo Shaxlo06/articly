@@ -35,7 +35,7 @@ export function RecentProjects({ items }: { items: ProjectItem[] }) {
           Birinchi maqolangizni yarating — u shu yerda, so&apos;nggi loyihalar qatorida ko&apos;rinadi.
         </p>
         <Link
-          href="/editor/new"
+          href="/editor"
           className="inline-flex items-center rounded-md bg-accent px-5 py-2.5 font-semibold text-ink-fixed hover:brightness-95 transition"
         >
           Birinchi maqolangizni yarating
