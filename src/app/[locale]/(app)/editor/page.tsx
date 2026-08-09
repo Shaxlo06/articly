@@ -1,86 +1,64 @@
-"use client";
+import { getLocale } from "next-intl/server";
+import { Link, redirect } from "@/i18n/navigation";
+import { getCurrentUser } from "@/lib/session";
+import { canUseFeature } from "@/lib/entitlements";
+import { prisma } from "@/lib/prisma";
 
-import { useState } from "react";
-import { useRouter } from "@/i18n/navigation";
-
-type Choice = "SCRATCH" | "UPLOADED" | "PARTIAL";
-
-const CHOICES: { key: Choice; title: string; description: string }[] = [
-  { key: "SCRATCH", title: "Write from scratch", description: "Start with a topic and let the guided steps build your outline and draft." },
-  { key: "UPLOADED", title: "Edit an existing article", description: "Paste or upload a finished draft to structure, polish, and export." },
-  { key: "PARTIAL", title: "Complete a partial draft", description: "Upload what you have so far and finish the remaining sections." },
-];
-
-export default function NewArticlePage() {
-  const router = useRouter();
-  const [choice, setChoice] = useState<Choice>("SCRATCH");
-  const [text, setText] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-
-  async function handleContinue() {
-    setError(null);
-    if (choice !== "SCRATCH" && text.trim().length < 40) {
-      setError("Paste at least a few paragraphs so we can detect the structure.");
-      return;
-    }
-    setSubmitting(true);
-    try {
-      const res = await fetch("/api/articles", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ source: choice, existingText: choice === "SCRATCH" ? undefined : text }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error ?? "Something went wrong.");
-        return;
-      }
-      router.push(`/editor/${data.articleId}`);
-    } finally {
-      setSubmitting(false);
-    }
+/**
+ * No more "how would you like to start" chooser screen — landing here reuses
+ * the user's existing empty draft (so repeated nav clicks don't spawn junk
+ * rows) or creates a fresh one, then drops straight into the workspace. The
+ * scratch/edit/complete choice now lives inside ArticleWorkspace itself.
+ */
+export default async function EditorEntryPage() {
+  const user = await getCurrentUser();
+  const locale = await getLocale();
+  if (!user.subscription) {
+    return (
+      <div className="max-w-md">
+        <p className="text-sm text-muted">Obuna topilmadi. Iltimos qaytadan kiring.</p>
+      </div>
+    );
   }
 
-  return (
-    <div className="max-w-2xl">
-      <p className="text-xs font-bold uppercase tracking-widest text-accent-strong">Edit Article</p>
-      <h1 className="font-serif text-3xl font-semibold mt-1">How would you like to start?</h1>
+  const reusable = await prisma.article.findFirst({
+    where: { ownerId: user.id, status: "DRAFT", sections: { none: {} } },
+    orderBy: { createdAt: "desc" },
+  });
 
-      <div className="grid gap-3 mt-8">
-        {CHOICES.map((c) => (
-          <button
-            key={c.key}
-            onClick={() => setChoice(c.key)}
-            className={`text-left rounded-lg border p-5 transition-colors ${
-              choice === c.key ? "border-accent-strong bg-accent-soft" : "border-border-strong hover:border-accent-strong"
-            }`}
-          >
-            <p className="font-semibold">{c.title}</p>
-            <p className="text-sm text-muted mt-1">{c.description}</p>
-          </button>
-        ))}
+  if (reusable) {
+    redirect({ href: `/editor/${reusable.id}`, locale });
+  }
+
+  const activeCount = await prisma.article.count({
+    where: { ownerId: user.id, status: { in: ["DRAFT", "IN_REVIEW"] } },
+  });
+  const entitlement = canUseFeature(user.subscription, "editArticle", activeCount);
+
+  if (!entitlement.allowed) {
+    return (
+      <div className="max-w-md flex flex-col gap-3">
+        <h1 className="font-serif text-2xl font-semibold">Faol maqolalar limitiga yetdingiz</h1>
+        <p className="text-sm text-muted">
+          Joriy rejangizda faol maqolalar soni cheklangan. Davom etish uchun rejangizni oshiring.
+        </p>
+        <Link href="/account" className="self-start rounded-md bg-accent px-5 py-2.5 font-semibold text-ink-fixed hover:brightness-95 transition">
+          Rejani oshirish
+        </Link>
       </div>
+    );
+  }
 
-      {choice !== "SCRATCH" && (
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          rows={10}
-          placeholder="Paste your draft here…"
-          className="w-full mt-5 rounded-md border border-border-strong p-4 text-sm focus:border-accent-strong focus:outline-none"
-        />
-      )}
+  const article = await prisma.article.create({
+    data: {
+      ownerId: user.id,
+      title: "Untitled article",
+      field: user.field,
+      language: user.preferredLanguage,
+      source: "SCRATCH",
+      status: "DRAFT",
+    },
+  });
 
-      {error && <p className="text-sm text-accent-strong mt-3">{error}</p>}
-
-      <button
-        onClick={handleContinue}
-        disabled={submitting}
-        className="mt-6 rounded-md bg-accent px-6 py-2.5 font-semibold text-ink-fixed hover:brightness-95 disabled:opacity-50 transition"
-      >
-        {submitting ? "Setting up…" : "Continue"}
-      </button>
-    </div>
-  );
+  redirect({ href: `/editor/${article.id}`, locale });
 }

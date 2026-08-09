@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Link } from "@/i18n/navigation";
-import type { Article, ArticleSection } from "@prisma/client";
+import type { Article, ArticleSection, ArticleSource } from "@prisma/client";
 import { LanguageSelector } from "./LanguageSelector";
 import { SectionEditor } from "./SectionEditor";
 import { ArticleSettingsPanel } from "./ArticleSettingsPanel";
@@ -25,6 +25,12 @@ type InfoFields = {
   keywords: string;
 };
 
+const SOURCE_OPTIONS: { value: ArticleSource; label: string }[] = [
+  { value: "SCRATCH", label: "0 dan yozish" },
+  { value: "UPLOADED", label: "Tahrirlash" },
+  { value: "PARTIAL", label: "To'ldirish" },
+];
+
 export function ArticleWorkspace({ article: initialArticle, sections: initialSections }: { article: Article; sections: ArticleSection[] }) {
   const [article, setArticle] = useState(initialArticle);
   const [sections, setSections] = useState(initialSections.sort((a, b) => a.order - b.order));
@@ -35,8 +41,13 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
   const [affiliation, setAffiliation] = useState(initialArticle.affiliation ?? "");
   const [keywords, setKeywords] = useState(initialArticle.keywords ?? "");
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
-  const [busy, setBusy] = useState<"structure" | "analysis" | "finalize" | null>(null);
+  const [busy, setBusy] = useState<"analysis" | "finalize" | null>(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [sourceMode, setSourceMode] = useState<ArticleSource>(initialArticle.source);
+  const [pastedText, setPastedText] = useState("");
+  const [generating, setGenerating] = useState(false);
+  const [genProgress, setGenProgress] = useState<string | null>(null);
+  const [genError, setGenError] = useState<string | null>(null);
 
   async function saveInfo(overrides: Partial<InfoFields> = {}) {
     const payload: InfoFields = { topic, field, language, authors, affiliation, keywords, ...overrides };
@@ -49,14 +60,65 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
     if (res.ok) setArticle(data.article);
   }
 
-  async function generateStructure() {
-    setBusy("structure");
+  async function changeSourceMode(mode: ArticleSource) {
+    setSourceMode(mode);
+    await fetch(`/api/articles/${article.id}/settings`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ source: mode }),
+    });
+  }
+
+  async function generateFullArticle() {
+    setGenError(null);
+    if (!topic.trim()) {
+      setGenError("Mavzuni kiriting.");
+      return;
+    }
+    if (sourceMode !== "SCRATCH" && pastedText.trim().length < 40) {
+      setGenError("Kamida bir necha paragraf matn joylashtiring.");
+      return;
+    }
+
+    setGenerating(true);
     try {
-      const res = await fetch(`/api/articles/${article.id}/structure`, { method: "POST" });
-      const data = await res.json();
-      if (res.ok) setSections(data.sections.sort((a: ArticleSection, b: ArticleSection) => a.order - b.order));
+      if (sourceMode !== "SCRATCH") {
+        setGenProgress("Matn tahlil qilinmoqda…");
+        const res = await fetch(`/api/articles/${article.id}/segment`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text: pastedText }),
+        });
+        const data = await res.json();
+        if (res.ok) setSections(data.sections.sort((a: ArticleSection, b: ArticleSection) => a.order - b.order));
+        else setGenError(data.error ?? "Xatolik yuz berdi.");
+      } else {
+        setGenProgress("Struktura tayyorlanmoqda…");
+        const structRes = await fetch(`/api/articles/${article.id}/structure`, { method: "POST" });
+        const structData = await structRes.json();
+        if (!structRes.ok) {
+          setGenError(structData.error ?? "Xatolik yuz berdi.");
+          return;
+        }
+        const skeleton: ArticleSection[] = structData.sections.sort((a: ArticleSection, b: ArticleSection) => a.order - b.order);
+        setSections(skeleton);
+
+        for (let i = 0; i < skeleton.length; i++) {
+          setGenProgress(`${skeleton[i].title} yozilmoqda… (${i + 1}/${skeleton.length})`);
+          const genRes = await fetch(`/api/articles/${article.id}/sections/${skeleton[i].id}/generate`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ mode: "draft" }),
+          });
+          const genData = await genRes.json();
+          if (genRes.ok) {
+            setSections((prev) => prev.map((s) => (s.id === genData.section.id ? genData.section : s)));
+          }
+        }
+      }
     } finally {
-      setBusy(null);
+      setGenerating(false);
+      setGenProgress(null);
     }
   }
 
@@ -98,7 +160,9 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-xs font-bold uppercase tracking-widest text-accent-strong">Edit Article</p>
+          <p className="text-xs font-bold uppercase tracking-widest text-accent-strong">
+            Edit Article <span className="text-muted normal-case font-normal">&gt; {topic || "Yangi maqola"}</span>
+          </p>
           <h1 className="font-serif text-3xl font-semibold mt-1">{topic || "Untitled article"}</h1>
         </div>
         <div className="flex items-center gap-2">
@@ -152,6 +216,35 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
         <div className="w-full lg:w-80 shrink-0 flex flex-col gap-5">
           <div className="flex flex-col gap-4 rounded-lg border border-border bg-surface p-5">
             <h3 className="font-serif text-lg font-semibold">Maqola ma&apos;lumotlari</h3>
+
+            <div className="flex rounded-md border border-border-strong p-0.5">
+              {SOURCE_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => changeSourceMode(opt.value)}
+                  className={`flex-1 rounded px-2 py-1.5 text-xs font-semibold transition-colors ${
+                    sourceMode === opt.value ? "bg-accent text-ink-fixed" : "text-muted hover:text-foreground"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+
+            {sourceMode !== "SCRATCH" && (
+              <label className="flex flex-col gap-1.5 text-sm">
+                <span className="font-semibold">Fayl yuklash yoki matn joylash</span>
+                <textarea
+                  value={pastedText}
+                  onChange={(e) => setPastedText(e.target.value)}
+                  rows={6}
+                  placeholder="Mavjud qoralamangizni shu yerga joylashtiring…"
+                  className="rounded-md border border-border-strong p-3 text-sm focus:border-accent-strong focus:outline-none"
+                />
+              </label>
+            )}
+
             <label className="flex flex-col gap-1.5 text-sm">
               <span className="font-semibold">Mavzu</span>
               <input
@@ -233,14 +326,23 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
         <div className="flex-1 min-w-0 flex flex-col gap-4">
           {sections.length === 0 ? (
             <div className="rounded-lg border border-dashed border-border-strong bg-tint/40 p-10 text-center flex flex-col items-center gap-4">
-              <h3 className="font-serif text-xl font-semibold">Hali bo&apos;limlar yo&apos;q</h3>
-              <p className="text-muted max-w-md">IMRAD tuzilishini avtomatik yaratish uchun quyidagi tugmani bosing.</p>
+              <div className="h-14 w-14 rounded-full bg-accent-soft flex items-center justify-center text-accent-strong">
+                <SparkleIcon />
+              </div>
+              <h3 className="font-serif text-xl font-semibold">Tadqiqot muhiti tayyor</h3>
+              <p className="text-muted max-w-md">Chap panelda mavzuni kiriting va generatsiya tugmasini bosing.</p>
+              <div className="flex flex-wrap justify-center gap-2">
+                <InfoBadge>⚡ 2–3 daqiqada</InfoBadge>
+                <InfoBadge>🅰️ 3 ta tilda</InfoBadge>
+                <InfoBadge>📄 PDF / Word</InfoBadge>
+              </div>
+              {genError && <p className="text-sm text-accent-strong">{genError}</p>}
               <button
-                onClick={generateStructure}
-                disabled={busy !== null}
-                className="rounded-md bg-accent px-5 py-2.5 font-semibold text-ink-fixed hover:brightness-95 disabled:opacity-50"
+                onClick={generateFullArticle}
+                disabled={generating}
+                className="rounded-md bg-accent px-6 py-2.5 font-semibold text-ink-fixed hover:brightness-95 disabled:opacity-50"
               >
-                {busy === "structure" ? "Yaratilmoqda…" : "Struktura yaratish"}
+                {generating ? genProgress ?? "Yaratilmoqda…" : "✨ Maqola yaratish"}
               </button>
             </div>
           ) : (
@@ -290,5 +392,18 @@ function Summary({ label, count }: { label: string; count: number }) {
       <span className="text-muted">{label}</span>
       <span className={`font-semibold ${count > 0 ? "text-accent-strong" : "text-muted"}`}>{count}</span>
     </div>
+  );
+}
+
+function InfoBadge({ children }: { children: React.ReactNode }) {
+  return <span className="rounded-full bg-surface border border-border-strong px-3 py-1 text-xs font-medium">{children}</span>;
+}
+
+function SparkleIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3v4M12 17v4M3 12h4M17 12h4" />
+      <path d="M12 8a4 4 0 0 0 4 4 4 4 0 0 0-4 4 4 4 0 0 0-4-4 4 4 0 0 0 4-4Z" />
+    </svg>
   );
 }

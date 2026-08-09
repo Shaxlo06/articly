@@ -7,6 +7,8 @@ import TextAlign from "@tiptap/extension-text-align";
 import Image from "@tiptap/extension-image";
 import { Table, TableRow, TableHeader, TableCell } from "@tiptap/extension-table";
 import Placeholder from "@tiptap/extension-placeholder";
+import { Mathematics } from "@tiptap/extension-mathematics";
+import "katex/dist/katex.min.css";
 
 const HEADING_OPTIONS = [
   { value: "normal", label: "Normal matn" },
@@ -45,14 +47,24 @@ function ToolbarButton({
   );
 }
 
-function UrlPopover({ label, onSubmit }: { label: string; onSubmit: (url: string) => void }) {
+function TextInputPopover({
+  label,
+  icon,
+  placeholder,
+  onSubmit,
+}: {
+  label: string;
+  icon: React.ReactNode;
+  placeholder: string;
+  onSubmit: (value: string) => void;
+}) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
 
   return (
     <div className="relative">
       <ToolbarButton onClick={() => setOpen((v) => !v)} label={label}>
-        {label === "Havola" ? <LinkIcon /> : <ImageIcon />}
+        {icon}
       </ToolbarButton>
       {open && (
         <form
@@ -68,7 +80,7 @@ function UrlPopover({ label, onSubmit }: { label: string; onSubmit: (url: string
             autoFocus
             value={value}
             onChange={(e) => setValue(e.target.value)}
-            placeholder="https://..."
+            placeholder={placeholder}
             className="w-48 rounded border border-border-strong px-2 py-1 text-xs outline-none focus:border-accent-strong"
           />
           <button type="submit" className="rounded bg-accent px-2 text-xs font-semibold text-ink-fixed">
@@ -162,6 +174,14 @@ function QuoteIcon() {
     </svg>
   );
 }
+function FormulaIcon() {
+  return (
+    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M6 4.5h9L10 12l5 7.5H6" />
+      <path d="M13 12h5" />
+    </svg>
+  );
+}
 
 function Toolbar({ editor }: { editor: Editor }) {
   const headingValue = editor.isActive("heading", { level: 1 })
@@ -225,8 +245,8 @@ function Toolbar({ editor }: { editor: Editor }) {
         </ToolbarButton>
       ))}
 
-      <UrlPopover label="Havola" onSubmit={(url) => editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run()} />
-      <UrlPopover label="Rasm" onSubmit={(url) => editor.chain().focus().setImage({ src: url }).run()} />
+      <TextInputPopover label="Havola" icon={<LinkIcon />} placeholder="https://..." onSubmit={(url) => editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run()} />
+      <TextInputPopover label="Rasm" icon={<ImageIcon />} placeholder="https://..." onSubmit={(url) => editor.chain().focus().setImage({ src: url }).run()} />
 
       <ToolbarButton onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()} label="Jadval">
         <TableIcon />
@@ -234,6 +254,12 @@ function Toolbar({ editor }: { editor: Editor }) {
       <ToolbarButton onClick={() => editor.chain().focus().toggleBlockquote().run()} active={editor.isActive("blockquote")} label="Iqtibos">
         <QuoteIcon />
       </ToolbarButton>
+      <TextInputPopover
+        label="Formula"
+        icon={<FormulaIcon />}
+        placeholder="x^2 + y^2 = z^2"
+        onSubmit={(latex) => editor.chain().focus().insertInlineMath({ latex }).run()}
+      />
     </div>
   );
 }
@@ -260,6 +286,7 @@ export function RichTextEditor({
       TableHeader,
       TableCell,
       Placeholder.configure({ placeholder: placeholder ?? "" }),
+      Mathematics,
     ],
     content,
     editorProps: {
