@@ -220,23 +220,7 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
 
       {(step === "draft" || step === "edit") && (
         <div className="flex flex-col lg:flex-row gap-5 items-start">
-          <div className="w-full lg:w-72 shrink-0">
-            <ArticleSettingsPanel
-              articleId={article.id}
-              initial={{
-                wordLimit: article.wordLimit,
-                academicLevel: article.academicLevel,
-                method: article.method,
-                articleType: article.articleType,
-                includeReferences: article.includeReferences,
-              }}
-              sections={sections}
-              onSectionAdded={addSection}
-              onSectionRemoved={removeSection}
-            />
-          </div>
-
-          <div className="flex-1 min-w-0 flex flex-col gap-4">
+          <div className="flex-1 min-w-0 flex flex-col gap-4 order-2 lg:order-1">
             <div className="flex items-center justify-between">
               <p className="text-sm text-muted">
                 {step === "draft"
@@ -263,6 +247,22 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
               )}
             </div>
             <StepActions onBack={back} onNext={next} nextLabel="Continue" busy={busy} />
+          </div>
+
+          <div className="w-full lg:w-72 shrink-0 order-1 lg:order-2">
+            <ArticleSettingsPanel
+              articleId={article.id}
+              initial={{
+                wordLimit: article.wordLimit,
+                academicLevel: article.academicLevel,
+                method: article.method,
+                articleType: article.articleType,
+                includeReferences: article.includeReferences,
+              }}
+              sections={sections}
+              onSectionAdded={addSection}
+              onSectionRemoved={removeSection}
+            />
           </div>
         </div>
       )}
