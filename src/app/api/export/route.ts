@@ -48,6 +48,7 @@ export async function POST(request: NextRequest) {
     title: body.title,
     sections: body.sections,
     ownerName: user.name,
+    email: user.email,
     authors: authors ?? undefined,
     affiliation: affiliation ?? undefined,
     keywords: keywords ?? undefined,

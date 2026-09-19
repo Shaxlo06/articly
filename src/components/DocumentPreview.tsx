@@ -6,16 +6,18 @@ export function DocumentPreview({
   title,
   authors,
   affiliation,
+  email,
   keywords,
   sections,
 }: {
   title: string;
   authors?: string;
   affiliation?: string;
+  email?: string;
   keywords?: string;
   sections: { title: string; content: string }[];
 }) {
-  const html = buildHtmlDocument({ title, authors, affiliation, keywords, sections });
+  const html = buildHtmlDocument({ title, authors, affiliation, email, keywords, sections });
 
   return (
     <div className="rounded-lg border border-border bg-tint/30 p-3">

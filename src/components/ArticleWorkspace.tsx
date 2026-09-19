@@ -10,6 +10,7 @@ import { RecommendationList, type Issue } from "./RecommendationList";
 import { VersionHistoryPanel } from "./VersionHistoryPanel";
 import { ExportToolbar } from "./ExportToolbar";
 import { DocumentPreview } from "./DocumentPreview";
+import { ArticleFormatGuide } from "./ArticleFormatGuide";
 
 interface AnalysisResult {
   quality: { grammar: Issue[]; style: Issue[]; formatting: Issue[] };
@@ -25,13 +26,15 @@ type InfoFields = {
   keywords: string;
 };
 
+type WorkspaceView = "editor" | "guide" | "preview";
+
 const SOURCE_OPTIONS: { value: ArticleSource; label: string }[] = [
   { value: "SCRATCH", label: "0 dan yozish" },
   { value: "UPLOADED", label: "Tahrirlash" },
   { value: "PARTIAL", label: "To'ldirish" },
 ];
 
-export function ArticleWorkspace({ article: initialArticle, sections: initialSections }: { article: Article; sections: ArticleSection[] }) {
+export function ArticleWorkspace({ article: initialArticle, sections: initialSections, userEmail }: { article: Article; sections: ArticleSection[]; userEmail: string }) {
   const [article, setArticle] = useState(initialArticle);
   const [sections, setSections] = useState(initialSections.sort((a, b) => a.order - b.order));
   const [topic, setTopic] = useState(initialArticle.title);
@@ -42,7 +45,7 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
   const [keywords, setKeywords] = useState(initialArticle.keywords ?? "");
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
   const [busy, setBusy] = useState<"analysis" | "finalize" | null>(null);
-  const [showPreview, setShowPreview] = useState(false);
+  const [activeView, setActiveView] = useState<WorkspaceView>("editor");
   const [sourceMode, setSourceMode] = useState<ArticleSource>(initialArticle.source);
   const [pastedText, setPastedText] = useState("");
   const [generating, setGenerating] = useState(false);
@@ -165,7 +168,7 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
           </p>
           <h1 className="font-serif text-3xl font-semibold mt-1">{topic || "Untitled article"}</h1>
         </div>
-        <div className="flex items-center gap-2">
+        {activeView === "editor" && <div className="flex items-center gap-2">
           <button
             onClick={runAnalysis}
             disabled={busy !== null}
@@ -184,10 +187,22 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
           ) : (
             <span className="rounded-md bg-accent-soft px-4 py-2 text-sm font-semibold text-accent-strong">Yakunlangan</span>
           )}
-        </div>
+        </div>}
       </div>
 
-      {analysis && (
+      <div className="flex w-full overflow-x-auto rounded-lg border border-border bg-surface p-1 sm:w-fit" role="tablist" aria-label="Edit Article views">
+        <WorkspaceTab active={activeView === "editor"} onClick={() => setActiveView("editor")} icon="edit">
+          Editor
+        </WorkspaceTab>
+        <WorkspaceTab active={activeView === "guide"} onClick={() => setActiveView("guide")} icon="guide">
+          Format Guide
+        </WorkspaceTab>
+        <WorkspaceTab active={activeView === "preview"} onClick={() => setActiveView("preview")} icon="preview">
+          Preview
+        </WorkspaceTab>
+      </div>
+
+      {activeView === "editor" && analysis && (
         <div className="rounded-lg border border-border bg-surface p-5 flex flex-col gap-5">
           <div className="flex flex-wrap gap-x-8 gap-y-2">
             <Summary label="Grammar issues" count={analysis.quality.grammar.length} />
@@ -212,6 +227,7 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
         </div>
       )}
 
+      <div className={activeView === "editor" ? "contents" : "hidden"}>
       <div className="flex flex-col lg:flex-row gap-5 items-start">
         <div className="w-full lg:w-80 shrink-0 flex flex-col gap-5">
           <div className="flex flex-col gap-4 rounded-lg border border-border bg-surface p-5">
@@ -347,26 +363,11 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
             </div>
           ) : (
             <>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-4">
                 <p className="text-sm text-muted">Bo&apos;limlarni yozing yoki AI yordamida generatsiya qiling.</p>
-                <button
-                  onClick={() => setShowPreview((v) => !v)}
-                  className="shrink-0 rounded-md border border-border-strong px-3 py-1.5 text-xs font-semibold hover:border-accent-strong"
-                >
-                  {showPreview ? "Hide A4 preview" : "Show A4 preview"}
-                </button>
-              </div>
-              <div className={showPreview ? "grid gap-4 xl:grid-cols-2 items-start" : ""}>
-                <div className="flex flex-col gap-4">
-                  {sections.map((s) => (
-                    <SectionEditor key={s.id} articleId={article.id} section={s} onChange={updateSection} />
-                  ))}
-                </div>
-                {showPreview && (
-                  <div className="xl:sticky xl:top-4">
-                    <DocumentPreview title={topic} authors={authors} affiliation={affiliation} keywords={keywords} sections={sections} />
-                  </div>
-                )}
+                {sections.map((s) => (
+                  <SectionEditor key={s.id} articleId={article.id} section={s} onChange={updateSection} />
+                ))}
               </div>
             </>
           )}
@@ -382,7 +383,50 @@ export function ArticleWorkspace({ article: initialArticle, sections: initialSec
         />
         <VersionHistoryPanel articleId={article.id} />
       </div>
+      </div>
+
+      {activeView === "guide" && <ArticleFormatGuide />}
+
+      {activeView === "preview" && (
+        <div className="rounded-xl border border-border bg-surface p-3 sm:p-5">
+          <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest text-[#2a628d] dark:text-[#91c4e7]">A4 document preview</p>
+              <h2 className="mt-1 font-serif text-xl font-semibold">Eksportdan oldingi ko‘rinish</h2>
+            </div>
+            <p className="text-sm text-muted">A4 · Times New Roman · 12 pt · 1.5 interval</p>
+          </div>
+          <DocumentPreview title={topic} authors={authors} affiliation={affiliation} email={userEmail} keywords={keywords} sections={sections} />
+        </div>
+      )}
     </div>
+  );
+}
+
+function WorkspaceTab({ active, onClick, icon, children }: { active: boolean; onClick: () => void; icon: "edit" | "guide" | "preview"; children: React.ReactNode }) {
+  return (
+    <button
+      type="button"
+      role="tab"
+      aria-selected={active}
+      onClick={onClick}
+      className={`flex min-w-max items-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+        active ? "bg-[#214f76] text-white shadow-sm dark:bg-[#77afd4] dark:text-[#10212c]" : "text-muted hover:bg-tint/60 hover:text-foreground"
+      }`}
+    >
+      <WorkspaceTabIcon name={icon} />
+      {children}
+    </button>
+  );
+}
+
+function WorkspaceTabIcon({ name }: { name: "edit" | "guide" | "preview" }) {
+  return (
+    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {name === "edit" && <><path d="M4 20h4l11-11a2.8 2.8 0 0 0-4-4L4 16z" /><path d="m13.5 6.5 4 4" /></>}
+      {name === "guide" && <><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H11v17H6.5A2.5 2.5 0 0 0 4 22.5zM20 5.5A2.5 2.5 0 0 0 17.5 3H13v17h4.5a2.5 2.5 0 0 1 2.5 2.5z" /></>}
+      {name === "preview" && <><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" /><circle cx="12" cy="12" r="2.5" /></>}
+    </svg>
   );
 }
 

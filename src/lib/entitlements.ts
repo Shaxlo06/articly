@@ -2,7 +2,7 @@ import type { PlanTier, Subscription } from "@prisma/client";
 
 export const PLAN_LIMITS = {
   FREE: {
-    editArticle: { maxActiveArticles: 1, aiSectionGenerations: 20 },
+    editArticle: { aiSectionGenerations: 20 },
     humanize: { runsPerMonth: 2 },
     // "1 language pair" (spec §9) is enforced here as a monthly run cap
     // rather than literally locking one pair — a deliberate MVP
@@ -14,7 +14,7 @@ export const PLAN_LIMITS = {
     versionHistory: { maxVersions: 1 },
   },
   PRO: {
-    editArticle: { maxActiveArticles: 10, aiSectionGenerations: 200 },
+    editArticle: { aiSectionGenerations: 200 },
     humanize: { runsPerMonth: 20 },
     translate: { languagePairs: "multiple" as const, runsPerMonth: 30 },
     journalRecommendation: { maxResults: "all" as const, advancedFilters: false },
@@ -23,7 +23,7 @@ export const PLAN_LIMITS = {
     versionHistory: { maxVersions: 10 },
   },
   MAX: {
-    editArticle: { maxActiveArticles: "unlimited" as const, aiSectionGenerations: "unlimited" as const },
+    editArticle: { aiSectionGenerations: "unlimited" as const },
     humanize: { runsPerMonth: "unlimited" as const },
     translate: { languagePairs: "all" as const, priority: true, runsPerMonth: "unlimited" as const },
     journalRecommendation: { maxResults: "all" as const, advancedFilters: true },
@@ -37,7 +37,7 @@ export type FeatureKey = keyof typeof PLAN_LIMITS.FREE;
 
 export interface EntitlementResult {
   allowed: boolean;
-  reason?: "not_in_plan" | "monthly_limit_reached" | "count_limit_reached";
+  reason?: "not_in_plan" | "monthly_limit_reached";
   upgradeTo?: PlanTier;
   limit?: unknown;
 }
@@ -70,11 +70,6 @@ export function canUseFeature(
     const monthly = (limit as { runsPerMonth?: number | "unlimited" }).runsPerMonth;
     if (typeof monthly === "number" && usageValue >= monthly) {
       return { allowed: false, reason: "monthly_limit_reached", upgradeTo: nextTier(subscription.plan), limit };
-    }
-
-    const maxActive = (limit as { maxActiveArticles?: number | "unlimited" }).maxActiveArticles;
-    if (typeof maxActive === "number" && usageValue >= maxActive) {
-      return { allowed: false, reason: "count_limit_reached", upgradeTo: nextTier(subscription.plan), limit };
     }
   }
 

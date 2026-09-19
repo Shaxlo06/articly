@@ -10,5 +10,5 @@ export default async function EditorPage({ params }: { params: Promise<{ article
   const article = await prisma.article.findUnique({ where: { id: articleId }, include: { sections: true } });
   if (!article || article.ownerId !== user.id) notFound();
 
-  return <ArticleWorkspace article={article} sections={article.sections} />;
+  return <ArticleWorkspace article={article} sections={article.sections} userEmail={user.email} />;
 }

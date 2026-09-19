@@ -11,15 +11,17 @@ export const MARGIN_MM = { top: 25, bottom: 25, left: 30, right: 20 };
 export const FONT_FAMILY = "Times New Roman";
 
 export const FONT_SIZE_PT = {
-  title: 16,
+  title: 14,
   author: 12,
-  heading1: 14,
-  heading2: 13,
+  heading1: 12,
+  heading2: 12,
   body: 12,
   caption: 10,
 };
 
 export const LINE_SPACING = 1.5;
+
+export const FIRST_LINE_INDENT_MM = 12.5;
 
 export const ABSTRACT_WORD_RANGE = { min: 150, max: 250 };
 
